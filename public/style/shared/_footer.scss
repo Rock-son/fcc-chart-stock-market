@@ -1,0 +1,26 @@
+.footer {
+    font-size: .8rem;
+	position: fixed;
+	z-index: -1;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    text-align: center;
+    & .fa-heart-o {
+        color: red;
+	}
+	&__codedby {
+		color: #333;
+	}
+    &__codedby__link {
+        text-decoration: none;
+        &:hover {
+            color: cyan;
+            text-decoration: underline;
+        }
+        &:visited {
+            color: #333;
+        }
+    }
+}

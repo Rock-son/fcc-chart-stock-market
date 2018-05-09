@@ -1,0 +1,21 @@
+$grey: #999;
+
+*, *::after, *::before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+
+body {
+	font-family: "Helvetica Neue", Calibri, sans-serif;
+}
+.test {
+    color: $grey;
+    transition: all 1.5s;
+}
+@import "../shared/_normalize.scss";
+@import "../shared/_mixins.scss";
+@import "./_navbar.scss";
+@import "./_body.scss";
+@import "../shared/_footer.scss";
