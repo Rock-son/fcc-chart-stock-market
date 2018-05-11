@@ -36,9 +36,7 @@ const config = {
 	},
 	devtool: "#source-map",
 	devServer: {
-		contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "public")],
-		hot: true,
-		quiet: true
+		contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "public")]
 	},
 	module: {
 		rules: [
@@ -53,13 +51,13 @@ const config = {
 					fallback: "style-loader",
 					use: [{
 						loader: "css-loader",
-						options: { importLoaders: 1, sourceMap: isDevEnv }},
+						options: { importLoaders: 1, sourceMap: isDevEnv } },
 					{
 						loader: "resolve-url-loader",
-						options: { sourceMap: isDevEnv }},
+						options: { sourceMap: isDevEnv } },
 					{
 						loader: "postcss-loader",
-						options: { sourceMap: isDevEnv }},
+						options: { sourceMap: isDevEnv } },
 					{
 						loader: "sass-loader",
 						options: { sourceMap: isDevEnv }

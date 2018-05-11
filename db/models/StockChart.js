@@ -7,15 +7,17 @@ const { Schema } = require("mongoose");
 // DEFINE MODEL
 const stockChart = new Schema({
 
-	stock: {
+	name: {
 		type: String, required: true, trim: true, lowercase: true
 	},
-	data: [String],
+	code: {
+		type: String, required: true, trim: true, lowercase: true
+	},
 	updatedUTC: { type: Date }
 });
 
 // UPDATE TIME
-goingUsersSchema.pre("save", function a(next) {
+stockChart.pre("save", function a(next) {
 	this.updatedUTC = Date.now();
 	return next();
 });
