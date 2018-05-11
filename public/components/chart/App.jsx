@@ -1,22 +1,18 @@
 "use strict";
 
 import React from "react";
-import PropTypes from "prop-types";
 
 
 import Chart from "Chart";
 import Footer from "Footer";
+import css from "../../style/chart/index";
 
-export default class Content extends React.Component {
-	constructor() {
-		super();
-	}
-	render() {
-		return (
-			<div className="chart">
-				<Chart />
-				<Footer />
-			</div>
-		);
-	}
-}
+export default () => {
+
+	return (
+		<div className="chart">
+			<Chart />
+			<Footer />
+		</div>
+	);
+};
