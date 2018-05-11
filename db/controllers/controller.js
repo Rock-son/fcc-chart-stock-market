@@ -1,6 +1,6 @@
 "use strict";
 
-const { StockChart } = require("StockChart");
+const { StockChart } = require("../models/StockChart");
 const createHash = require("./modules/_createHash").default;
 const getClientIp = require("./modules/getIp").default;
 
