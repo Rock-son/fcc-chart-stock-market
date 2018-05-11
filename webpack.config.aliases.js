@@ -1,5 +1,7 @@
 "use strict";
 
+const path = require("path");
+
 module.exports.Aliases = {
 	// HOME
 	App: path.join(__dirname, "public/components/chart/App.jsx"),
