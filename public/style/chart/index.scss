@@ -9,6 +9,7 @@ $grey: #999;
 
 body {
 	font-family: "Helvetica Neue", Calibri, sans-serif;
+	color: #999;
 }
 .test {
     color: $grey;
@@ -17,4 +18,5 @@ body {
 @import "../shared/_normalize.scss";
 @import "../shared/_mixins.scss";
 @import "./_chart.scss";
+@import "./_chart_form.scss";
 @import "../shared/_footer.scss";
