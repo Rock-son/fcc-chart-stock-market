@@ -63,18 +63,25 @@ mongoose.connect(dbUrl, { useMongoClient: true, autoIndex: false });
 // SEARCH BARS AND SAVE LAST LOCATION
 app.post("/api/addStock", (req, res, next) => {
 	const stock = mongoSanitize(req.body.stock.trim());
-	if (stock === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
+	const duration = mongoSanitize(req.body.duration.trim());
+	if (stock === "" || duration === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
 	const addStockPromise = db.addStock(req, res, next, stock);
 	const iextradingPromise = axios({
 		method: "get",
-		url: `https://api.iextrading.com/1.0/stock/${stock}/chart/1y`,
+		url: `https://api.iextrading.com/1.0/stock/${stock}/batch?types=quote,chart&range=${duration}`,
 		timeout: 2000,
 		validateStatus: status => status < 500 // Reject if the status code < 500
 		});
 
 	Promise.all([addStockPromise, iextradingPromise]).then(response => {
-		return res.status(200).send({dberror: response[0], data: response[1].data});
+		if (response[1].data === "Unknown symbol") {
+			db.removeStock(req, res, next, stock)
+				.then(() => res.status(400).send("Unknown symbol"))
+				.catch(error => res.status(400).send({ error }));
+		} else {
+			return res.status(200).send({dberror: response[0], chartData: response[1].data});
+		}
 		})
 		.catch(error => {
 			if (error.response) {
@@ -91,9 +98,9 @@ app.post("/api/addStock", (req, res, next) => {
 );
 
 app.post("/api/removeStock", (req, res, next) => {
-	const stock = mongoSanitize(req.body.stock.trim().toLowerCase());
+	const stock = mongoSanitize(req.body.stock.trim());
 	if (stock === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
-
+	console.log("This is interesting");
 	db.removeStock(req, res, next, stock)
 		.then(() => res.status(200).send())
 		.catch(error => res.status(400).send({ error }));
