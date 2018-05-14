@@ -16,8 +16,9 @@ export default class Content extends React.Component {
 		super();
 
 		this.state = {
-			input: "", stocks: [], stockData: {}, stockDscrptn: {}, componentErr: "", duration: "1m", stockErr: ""
+			input: "", stocks: [], stockDscrptn: {}, componentErr: "", duration: "1m", stockErr: ""
 		};
+		this.stockData = null;
 		this.input = React.createRef();
 		this.searchBtn = React.createRef();
 
@@ -30,7 +31,28 @@ export default class Content extends React.Component {
 
 	componentDidMount() {
 		this.input.current.focus();
+
+		axios.getAllStocks()
+			.then((response) => {
+				if (!response.data.length) { return ""; }
+				const chart = response.data.map(resp => resp.chart).map(charty => charty.map(obj => ({ [obj.date]: obj.close }))); // [ {date: close} ]
+				for (let i = 0; i < chart.length; i += 1) {
+					for (let j = 0; j < chart.length; j += 1) {
+						this.stockData.push();
+					}
+				}
+
+
+				this.setState({
+					stocks: response.data.map(item => item.quote.symbol),
+					stockErr: "",
+					componentErr: "",
+					stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.symbol]: cur.quote }), {})
+				});
+			})
+			.catch(err => err);
 	}
+
 	componentDidCatch(error/* , info */) {
 		// Display fallback UI
 		this.setState({ componentErr: error });
@@ -56,7 +78,6 @@ export default class Content extends React.Component {
 									stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)),
 									stockErr: "",
 									componentErr: "",
-									stockData: { ...prevState.stockData, [stock]: [] },
 									stockDscrptn: { ...prevState.stockDscrptn, [stock]: {} }
 								}));
 							this.input.current.click();
@@ -72,17 +93,21 @@ export default class Content extends React.Component {
 		const duration = this.state.duration.trim();
 		if (!stock || !duration) { return; }
 
+		if (this.state.stocks.indexOf(stock) > -1) {
+			this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock already selected!` });
+			return;
+		}
+
 		axios.addStock(stock, duration)
 			.then(
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
-					if (this.state.stocks.indexOf(stock) === -1 && stock && typeof response.data === "object") {
+					if (stock && typeof response.data === "object") {
 						this.setState(prevState => (
 							{
 								stocks: [...prevState.stocks, stock],
 								stockErr: "",
 								componentErr: "",
-								stockData: { ...prevState.stockData, [stock]: response.data.chartData.chart },
 								stockDscrptn: { ...prevState.stockDscrptn, [stock]: response.data.chartData.quote }
 							}
 						));
@@ -92,9 +117,6 @@ export default class Content extends React.Component {
 				},
 				() => this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock not traded on NasDaq!` })
 			).catch(err => this.setState({ stockErr: err }));
-
-
-		this.input.current.click();
 	}
 
 	selectAllOnEnter(e) {
@@ -118,7 +140,7 @@ export default class Content extends React.Component {
 					</div>
 					<div className="chart__form__container__inputs" >
 						<input type="text" className="chart__form__container__inputs__text" ref={this.input} placeholder="Stock code" value={this.state.input} onClick={this.selectAllOnEnter} onChange={this.handleInput} onKeyUp={this.handleEnterPress} />
-						<input type="button" className="chart__form__container__inputs__button" ref={this.searchBtn} value="Search" onClick={this.addStock} />
+						<input type="button" className="chart__form__container__inputs__button" ref={this.searchBtn} value="Add" onClick={this.addStock} />
 					</div>
 					<div className="chart__form__container__error" >{this.state.stockErr ? this.state.stockErr : ""}</div>
 				</div>
@@ -126,16 +148,18 @@ export default class Content extends React.Component {
 					(<h2 className="content__cards__error">{this.state.componentErr}</h2>) :
 
 					(this.state.stocks.map((stock) => {
-						const { change, close, companyName, latestTime, previousClose } = this.state.stockDscrptn[stock] || {};
+						const {
+							change, close, companyName, latestTime, previousClose
+						} = this.state.stockDscrptn[stock] || {};
 						return (
 							<div key={stock} className="chart__form__container">
 								<div id={stock} role="button" className="chart__form__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
 								<div className="chart__form__container__head" >
-									<h4 className="chart__form__container__head__header" >{stock}</h4>
+									<div className="chart__form__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
 									<div className="chart__form__container__head__trend" title={latestTime} data={change < 0 ? "negative" : "positive"} >{change}</div>
 									<div className="chart__form__container__head__value" title={previousClose} data={change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
 								</div>
-								<div className="chart__form__container__description"><span style={{ fontWeight: 700 }}>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
+								<div className="chart__form__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
 							</div>
 						);
 					}))
@@ -144,12 +168,3 @@ export default class Content extends React.Component {
 		);
 	}
 }
-
-Content.propTypes = {
-	// STATES
-
-	// ACTIONS
-
-	// ERRORS
-};
-
