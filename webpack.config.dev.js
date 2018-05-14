@@ -8,6 +8,7 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");/* webpack -
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 
 const isDevEnv = process.env.NODE_ENV === "development" || false;
+
 const { Aliases } = require("./webpack.config.aliases");
 
 // HTML_WEBPACK_PLUGIN

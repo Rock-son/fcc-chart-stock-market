@@ -22,4 +22,4 @@ stockChart.pre("save", function a(next) {
 	return next();
 });
 
-module.exports.StockChart = mongoose.model("StockChart", stockChart, "stockchart_going_users");
+module.exports.StockChart = mongoose.model("StockChart", stockChart, "stockchart_stocks");

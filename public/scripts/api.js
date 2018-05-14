@@ -6,11 +6,12 @@ const validateStatus = () => status => status < 500; // Reject if the status is 
 
 export default {
 
-	addStock: stock => axios({
+	addStock: (stock, duration) => axios({
 		method: "post",
 		url: "api/addStock",
 		data: {
-			stock
+			stock,
+			duration
 		},
 		headers: {
 			"Content-Type": "application/json"
@@ -23,6 +24,14 @@ export default {
 		data: {
 			stock
 		},
+		headers: {
+			"Content-Type": "application/json"
+		},
+		validateStatus
+	}),
+	getAllStocks: () => axios({
+		method: "post",
+		url: "api/getAllStocks",
 		headers: {
 			"Content-Type": "application/json"
 		},
