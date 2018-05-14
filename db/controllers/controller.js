@@ -5,7 +5,7 @@ const createHash = require("./modules/_createHash").default;
 const getClientIp = require("./modules/getIp").default;
 
 exports.getAllStocks = function () {
-	return StockChart.find({}, function(err, results) {
+	return StockChart.find({}, {_id: 0, code: 1}, function(err, results) {
 		if (err) { return err; }
 
 		return results || [];
