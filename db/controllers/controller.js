@@ -4,9 +4,9 @@ const { StockChart } = require("../models/StockChart");
 const createHash = require("./modules/_createHash").default;
 const getClientIp = require("./modules/getIp").default;
 
-exports.getStocks = function (city) {
-	return StockChart.find({city: city.toLowerCase()}, {"_id": 0, "bar": 1}, function(err, results) {
-		if (err) { return res.status(400).send(err); }
+exports.getAllStocks = function () {
+	return StockChart.find({}, function(err, results) {
+		if (err) { return err; }
 
 		return results || [];
 	});

@@ -28,5 +28,13 @@ export default {
 			"Content-Type": "application/json"
 		},
 		validateStatus
+	}),
+	getStocks: () => axios({
+		method: "post",
+		url: "api/getStocks",
+		headers: {
+			"Content-Type": "application/json"
+		},
+		validateStatus
 	})
 };
