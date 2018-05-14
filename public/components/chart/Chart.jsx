@@ -35,14 +35,20 @@ export default class Content extends React.Component {
 		axios.getAllStocks()
 			.then((response) => {
 				if (!response.data.length) { return ""; }
-				const chart = response.data.map(resp => resp.chart).map(charty => charty.map(obj => ({ [obj.date]: obj.close }))); // [ {date: close} ]
+				/*
+				try {
+					// => RESULT = [ [ date, value1, value2, ... ] ]
+					for (let j = 0; j < chart[0].length; j += 1) {
 				for (let i = 0; i < chart.length; i += 1) {
-					for (let j = 0; j < chart.length; j += 1) {
-						this.stockData.push();
+							subResult.push(chart[i][j].close);
+						}
+						result.push([chart[0][j].date, subResult].reduce((acc, curr) => acc.concat(curr), []));
+						subResult.length = 0;
 					}
+				} catch (error) {
+					return this.setState({ stockErr: error });
 				}
-
-
+				*/
 				this.setState({
 					stocks: response.data.map(item => item.quote.symbol),
 					stockErr: "",
