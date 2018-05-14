@@ -36,7 +36,7 @@ exports.addStock = function (req, res, next, code) {
 };
 
 exports.removeStock = function (req, res, next, code) {
-	return StockChart.remove({ "code": code }, function(err) {
+	return StockChart.remove({ "code": code.toLowerCase() }, function(err) {
 		if (err) { return err; }
 
 		return "";
