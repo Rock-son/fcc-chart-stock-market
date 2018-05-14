@@ -11,6 +11,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 // ROUTES
 const axios = require("axios");
+const axiosJS = require("./db/controllers/modules/axios");
 const getClientIp = require("./db/controllers/modules/getIp").default;
 // SECURITY
 const helmet = require("./security/helmet");
@@ -78,7 +79,7 @@ app.post("/api/addStock", (req, res, next) => {
 		if (response[1].data === "Unknown symbol") {
 			db.removeStock(req, res, next, stock)
 				.then(() => res.status(400).send("Unknown symbol"))
-				.catch(error => res.status(400).send({ error }));
+				.catch(error => res.status(404).send({error: error.message}));
 		} else {
 			return res.status(200).send({dberror: response[0], chartData: response[1].data});
 		}
@@ -97,19 +98,37 @@ app.post("/api/addStock", (req, res, next) => {
 	}
 );
 
+app.post("/api/getAllStocks", (req, res, next) => {
+	let stocks = null;
+	let promises = null;
+
+	db.getAllStocks()
+		.then(response => {
+			if (!response.length) { res.send(""); }
+			stocks = response.map(item => item.code);
+			promises = stocks.map(stock => axiosJS.get(stock, "1m"));
+
+			Promise.all(promises)
+				.then(resp => res.send(resp.map(item => item.data)))
+				.catch(err => res.status(400).send({error: err.message}));
+
+		})
+		.catch(err => res.status(400).send({error: err.message}));
+});
+
 app.post("/api/removeStock", (req, res, next) => {
 	const stock = mongoSanitize(req.body.stock.trim());
 	if (stock === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
-	console.log("This is interesting");
+
 	db.removeStock(req, res, next, stock)
 		.then(() => res.status(200).send())
-		.catch(error => res.status(400).send({ error }));
+		.catch(error => res.status(400).send({error: err.message}));
 	}
 );
 
 
 
-// PUT ALL ROUTES ABOVE THIS LINE OF CODE! - NOT IN USE
+// PUT ALL ROUTES ABOVE THIS LINE OF CODE!
 // "*" NEEDED FOR REACT ROUTER HISTORY LIB
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "dist", "index.html")));
 
