@@ -29,9 +29,9 @@ export default {
 		},
 		validateStatus
 	}),
-	getStocks: () => axios({
+	getAllStocks: () => axios({
 		method: "post",
-		url: "api/getStocks",
+		url: "api/getAllStocks",
 		headers: {
 			"Content-Type": "application/json"
 		},
