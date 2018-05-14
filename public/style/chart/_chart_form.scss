@@ -12,16 +12,19 @@
 		margin: 1%;
 		width: 23%;
 		min-width: 200px;
-		max-height: 130px;
+		max-height: 150px;
 		font-weight: 300;
 		text-align: left;
 		border: .5px solid #999;
 		background-color: #fff;
 		border-radius: 5px;
+		&:first-child &__head {
+			margin-bottom: 2%;
+		}
 		&__close {
 			float: right;
 			color: #fff;
-			background-color: red;
+			background-color: #fb7f7f;
 			border: .5px solid #999;
 			border-radius: 3px;
 			padding: 0 1% .8% 1%;
@@ -31,19 +34,53 @@
 			line-height: 1.3rem;
 			font-size: 1.3rem;
 			cursor: pointer;
+			&:hover {
+				background-color: #d44444;
+			}
 		}
-		&__header:first-child {
-			font-size: 1rem;
-		}
-		&__header {
-			color: #111;
-			font-size: 1.5rem;
-			padding-left: 2%;
-			margin: 4% 0 5% 0;
+		&__head {
+			width: 85%;
+			margin: 7% 0 5% 5%;
+			&:first-child &__header {
+					font-size: 1rem;
+				}
+			&__header {
+				display: inline-block;
+				color: #111;
+				font-weight: 700;
+				font-size: 1.5rem;
+				padding: .3rem .8rem .3rem 0;
+				margin: 0;
+			}
+			&__value {
+				float: right;
+				font-size: 1rem;
+				font-weight: 700;
+				padding: .6rem .8rem;
+				color: #333;
+				cursor: help;
+			}
+			&__trend {
+				float: right;
+				font-size: 1rem;
+				font-weight: 700;
+				margin-top: .3rem;
+			   	padding: .3rem .8rem;
+				border-radius: 5px;
+				cursor: help;
+				&[data="negative"] {
+					color:#eee;
+					background-color: #fb7f7f;
+				}
+				&[data="positive"] {
+					color: #e2cfcf;
+					background-color: #2cb92c;
+				}
+			}
 		}
 		&__inputs {
 			width: 16rem;
-			padding: 0 0 10% 2%;
+			padding: 0 0 10% 5%;
 			&__text {
 				width: 70%;
 			}
@@ -55,6 +92,11 @@
 			width: 90%;
 			padding: 0 0 10% 5%;
 			color: #aaa;
+		}
+		&__error {
+			color: red;
+			margin-left: 5%;
+			font-weight: 700;
 		}
 	}
 }
