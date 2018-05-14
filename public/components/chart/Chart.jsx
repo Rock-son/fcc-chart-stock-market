@@ -1,6 +1,7 @@
 "use strict";
 
 import React from "react";
+import xss from "xss-filters";
 
 import axios from "../../scripts/api";
 
@@ -14,12 +15,14 @@ export default class Content extends React.Component {
 	constructor() {
 		super();
 
-		this.state = { input: "", data: "", stocks: [], hasError: false, error: "" };
+		this.state = {
+			input: "", stocks: [], stockData: {}, stockDscrptn: {}, componentErr: "", duration: "1m", stockErr: ""
+		};
 		this.input = React.createRef();
 		this.searchBtn = React.createRef();
 
 		this.handleEnterPress = this.handleEnterPress.bind(this);
-		this.handleSearch = this.handleSearch.bind(this);
+		this.addStock = this.addStock.bind(this);
 		this.selectAllOnEnter = this.selectAllOnEnter.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 		this.removeStock = this.removeStock.bind(this);
@@ -30,7 +33,7 @@ export default class Content extends React.Component {
 	}
 	componentDidCatch(error/* , info */) {
 		// Display fallback UI
-		this.setState({ hasError: true, error });
+		this.setState({ componentErr: error });
 	}
 
 	handleEnterPress(e) {
@@ -44,26 +47,53 @@ export default class Content extends React.Component {
 		if ((e.keyCode === 13 || e.type === "click") && ((e.currentTarget || {}).id || "").trim()) {
 			const stock = e.currentTarget.id;
 			axios.removeStock(stock)
-				.then(() => {
-					const stockIdx = this.state.stocks.indexOf(stock);
-					if (stockIdx > -1) {
-						this.setState(prevState => ({ stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)) }));
-						this.input.current.click();
-					}
-				})
-				.catch(error => this.setState({ hasError: true, error }));
+				.then(
+					() => {
+						const stockIdx = this.state.stocks.indexOf(stock);
+						if (stockIdx > -1) {
+							this.setState(prevState => (
+								{
+									stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)),
+									stockErr: "",
+									componentErr: "",
+									stockData: { ...prevState.stockData, [stock]: [] },
+									stockDscrptn: { ...prevState.stockDscrptn, [stock]: {} }
+								}));
+							this.input.current.click();
+						}
+					},
+					reason => this.setState({ stockErr: reason })
+				).catch(err => this.setState({ stockErr: err }));
 		}
 	}
-	handleSearch(e) {
+	addStock(e) {
 		e.preventDefault();
-		axios.addStock(this.state.input)
-			.then(response => console.log(response.data))
-			.catch(err => console.error(err));
+		const stock = this.state.input.trim();
+		const duration = this.state.duration.trim();
+		if (!stock || !duration) { return; }
 
-		if (this.state.stocks.indexOf(this.state.input) === -1 && this.state.input.trim()) {
-			this.setState(prevState => ({ stocks: [...prevState.stocks, this.state.input] }));
-			this.input.current.click();
-		}
+		axios.addStock(stock, duration)
+			.then(
+				(response) => {
+					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
+					if (this.state.stocks.indexOf(stock) === -1 && stock && typeof response.data === "object") {
+						this.setState(prevState => (
+							{
+								stocks: [...prevState.stocks, stock],
+								stockErr: "",
+								componentErr: "",
+								stockData: { ...prevState.stockData, [stock]: response.data.chartData.chart },
+								stockDscrptn: { ...prevState.stockDscrptn, [stock]: response.data.chartData.quote }
+							}
+						));
+					} else {
+						this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock not traded on NasDaq!` });
+					}
+				},
+				() => this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock not traded on NasDaq!` })
+			).catch(err => this.setState({ stockErr: err }));
+
+
 		this.input.current.click();
 	}
 
@@ -83,22 +113,32 @@ export default class Content extends React.Component {
 		return (
 			<div className="chart__form" >
 				<div className="chart__form__container" >
-					<h4 className="chart__form__container__header" >Syncs stocks in realtime across clients</h4>
+					<div className="chart__form__container__head" >
+						<h4 className="chart__form__container__head__header" >Syncs stocks in realtime across clients</h4>
+					</div>
 					<div className="chart__form__container__inputs" >
 						<input type="text" className="chart__form__container__inputs__text" ref={this.input} placeholder="Stock code" value={this.state.input} onClick={this.selectAllOnEnter} onChange={this.handleInput} onKeyUp={this.handleEnterPress} />
-						<input type="button" className="chart__form__container__inputs__button" ref={this.searchBtn} value="Search" onClick={this.handleSearch} />
+						<input type="button" className="chart__form__container__inputs__button" ref={this.searchBtn} value="Search" onClick={this.addStock} />
 					</div>
+					<div className="chart__form__container__error" >{this.state.stockErr ? this.state.stockErr : ""}</div>
 				</div>
-				{(this.state.hasError) ?
-					(<h2 className="content__cards__error">{this.state.error}</h2>) :
+				{(this.state.componentErr) ?
+					(<h2 className="content__cards__error">{this.state.componentErr}</h2>) :
 
-					(this.state.stocks.map(stock => (
-						<div key={stock} className="chart__form__container">
-							<div id={stock} role="button" tabIndex={0} className="chart__form__container__close" onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
-							<h4 className="chart__form__container__header" >{stock}</h4>
-							<div className="chart__form__container__description">Facebook Inc. (FB) Prices, Dividends, Splits and Trading Volume</div>
-						</div>))
-					)
+					(this.state.stocks.map((stock) => {
+						const { change, close, companyName, latestTime, previousClose } = this.state.stockDscrptn[stock] || {};
+						return (
+							<div key={stock} className="chart__form__container">
+								<div id={stock} role="button" className="chart__form__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
+								<div className="chart__form__container__head" >
+									<h4 className="chart__form__container__head__header" >{stock}</h4>
+									<div className="chart__form__container__head__trend" title={latestTime} data={change < 0 ? "negative" : "positive"} >{change}</div>
+									<div className="chart__form__container__head__value" title={previousClose} data={change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
+								</div>
+								<div className="chart__form__container__description"><span style={{ fontWeight: 700 }}>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
+							</div>
+						);
+					}))
 				}
 			</div>
 		);
