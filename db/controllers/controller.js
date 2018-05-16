@@ -21,7 +21,24 @@ exports.getAllData = function () {
 	})
 	.catch(err => ({error: err.message}));
 };
+
+exports.getUpdateTime = function (code) {
+	return StockChart.findOne({}, {_id: 0, updatedUTC: 1}, function(err, result) {
 		if (err) { return err; }
+
+		return result;
+	})
+	.catch(err => ({error: err.message}));
+};
+
+exports.removeStock = function (code) {
+	return StockChart.remove({ "code": code.toUpperCase() }, function(err) {
+		if (err) { return err; }
+
+		return "";
+	})
+	.catch(err => ({error: err.message}));
+};
 
 		// IF STOCK DOES NOT exist - save it else return next()
 		if (!result) {
