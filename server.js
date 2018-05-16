@@ -67,33 +67,28 @@ app.post("/api/addStock", (req, res, next) => {
 	const duration = mongoSanitize(req.body.duration.trim());
 	if (stock === "" || duration === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
-	const addStockPromise = db.addStock(req, res, next, stock);
-	const iextradingPromise = axios({
-		method: "get",
-		url: `https://api.iextrading.com/1.0/stock/${stock}/batch?types=quote,chart&range=${duration}`,
-		timeout: 2000,
-		validateStatus: status => status < 500 // Reject if the status code < 500
-		});
+// SEARCH STOCKS AND SAVE ITS DATA
+app.post("/api/addStock", async (req, res, next) => {
 
-	Promise.all([addStockPromise, iextradingPromise]).then(response => {
-		if (response[1].data === "Unknown symbol") {
-			db.removeStock(req, res, next, stock)
-				.then(() => res.status(400).send("Unknown symbol"))
-				.catch(error => res.status(404).send({error: error.message}));
-		} else {
-			return res.status(200).send({dberror: response[0], chartData: response[1].data});
+	const stock = mongoSanitize((req.body.stock || "").trim());
+	if (!stock) { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
+
+	db.getUpdateTime()
+		.then(db => {
+			if (db) {
+				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
+				const oneDayMilisecs = 12 * 60 * 60 * 1000; //hrs:mins:secs:milisecs = 86400000
+				const dataMoreThan12hOld = (startOfDayMilisecs - db.updatedUTC.getTime()) > oneDayMilisecs;
+
+				// DATA NOT MORE THAN HALF DAY OLD - MERGE DB AND API DATA AND RETURN
+				if (!dataMoreThan12hOld) {
+					return helper.mergeAndReturnData(res, stock); // TESTING OK!!!
 		}
+			}
+			// NO DATA IN DB || DATA OLDER THAN HALF A DAY - UPDATE, SAVE AND RETURN
+			return helper.refreshAndReturnData(res, stock);
 		})
-		.catch(error => {
-			if (error.response) {
-				// The request was made and the server responded with a status code that falls out of the range of 2xx
-				return res.status(error.response.status).send(error.response.data);
-			}
-			if (error.request) {
-				// The request was made but no response was received `error.request` is an instance of http.ClientRequest in node.js
-				return res.status(400).send(error.request);
-			}
-			return res.status(400).send(error.message);
+		.catch(error => res.status(400).send({error: error.message}))
 		});
 	}
 );
