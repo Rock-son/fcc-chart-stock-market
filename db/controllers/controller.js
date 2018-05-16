@@ -45,9 +45,9 @@ exports.addStock = function (code, stockData) {
 
 	return StockChart.findOne({ code })
 		.then(result => {
-		// IF STOCK DOES NOT exist - save it else return next()
+			// IF STOCK DOES NOT exist - save it else return next()
 			if (stockData) {
-			const newStock = new StockChart({
+				const newStock = new StockChart({
 					name: stockData.quote.companyName,
 					code: stockData.quote.symbol,
 					quote: {
@@ -61,24 +61,38 @@ exports.addStock = function (code, stockData) {
 						id: stockData.quote.symbol,
 						values: stockData.chart.map(row => ({ date: row.date, price: row.close}))
 					}
-			});
+				});
 				return newStock.save(function(err) {
-				if (err) { return err; }
+					if (err) { return err; }
 
 					return newStock;
-			});
-		} else {
+				});
+			} else {
 				return new Error('No stock data supplied!');
-		}
-	})
+			}
+		})
 		.catch(err => {error: err.message})
 };
 
-exports.removeStock = function (req, res, next, code) {
-	return StockChart.remove({ "code": code.toLowerCase() }, function(err) {
-		if (err) { return err; }
 
-		return "";
-	})
-	.catch(err => err);
+exports.updateStock = function (code, stockData) {
+
+	return StockChart.findOneAndUpdate({ code }, {
+			quote: {
+				change: stockData.quote.change,
+				changePercent: stockData.quote.changePercent * 100,
+				close: stockData.quote.close,
+				companyName: stockData.quote.companyName,
+				latestTime: stockData.quote.latestTime,
+			},
+			chart: {
+				id: stockData.quote.symbol,
+				values: stockData.chart.map(row => ({ date: row.date, price: row.close }))
+			},
+			updatedUTC: Date.now()
+		})
+		.then(result => {
+			return result;
+		})
+		.catch(err => {error: err.message})
 };
