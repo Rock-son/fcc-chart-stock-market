@@ -10,8 +10,7 @@ const path = require("path");
 const fs = require("fs");
 const bodyParser = require("body-parser");
 // ROUTES
-const axios = require("axios");
-const axiosJS = require("./db/controllers/modules/axios");
+const helper = require("./db/controllers/modules/helpers");
 const getClientIp = require("./db/controllers/modules/getIp").default;
 // SECURITY
 const helmet = require("./security/helmet");
@@ -46,6 +45,8 @@ app.use(bodyParser.json({type: "application/json"}));
 app.use(bodyParser.json({ type: ["json", "application/csp-report"] }));
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 // app.use(morgan({stream: accessLogStream}));
+// LOG (Helmet-csp) CSP blocked requests
+// app.post("/report-violation", Log.logged);
 
 // SECURITY
 helmet(app);
@@ -58,78 +59,66 @@ app.use(limiter);
 mongoose.Promise = global.Promise;
 mongoose.connect(dbUrl, { useMongoClient: true, autoIndex: false });
 
-// LOG (Helmet-csp) CSP blocked requests
-// app.post("/report-violation", Log.logged);
 
-// SEARCH BARS AND SAVE LAST LOCATION
-app.post("/api/addStock", (req, res, next) => {
-	const stock = mongoSanitize(req.body.stock.trim());
-	const duration = mongoSanitize(req.body.duration.trim());
-	if (stock === "" || duration === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
-	const addStockPromise = db.addStock(req, res, next, stock);
-	const iextradingPromise = axios({
-		method: "get",
-		url: `https://api.iextrading.com/1.0/stock/${stock}/batch?types=quote,chart&range=${duration}`,
-		timeout: 2000,
-		validateStatus: status => status < 500 // Reject if the status code < 500
-		});
+// SEARCH STOCKS AND SAVE ITS DATA
+app.post("/api/addStock", async (req, res, next) => {
 
-	Promise.all([addStockPromise, iextradingPromise]).then(response => {
-		if (response[1].data === "Unknown symbol") {
-			db.removeStock(req, res, next, stock)
-				.then(() => res.status(400).send("Unknown symbol"))
-				.catch(error => res.status(404).send({error: error.message}));
-		} else {
-			return res.status(200).send({dberror: response[0], chartData: response[1].data});
-		}
+	const stock = mongoSanitize((req.body.stock || "").trim());
+	if (!stock) { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
+
+	db.getUpdateTime()
+		.then(db => {
+			if (db) {
+				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
+				const oneDayMilisecs = 12 * 60 * 60 * 1000; //hrs:mins:secs:milisecs = 86400000
+				const dataMoreThan12hOld = (startOfDayMilisecs - db.updatedUTC.getTime()) > oneDayMilisecs;
+
+				// DATA NOT MORE THAN HALF DAY OLD - MERGE DB AND API DATA AND RETURN
+				if (!dataMoreThan12hOld) {
+					return helper.mergeAndReturnData(res, stock); // TESTING OK!!!
+				}
+			}
+			// NO DATA IN DB || DATA OLDER THAN HALF A DAY - UPDATE, SAVE AND RETURN
+			return helper.refreshAndReturnData(res, stock);
 		})
-		.catch(error => {
-			if (error.response) {
-				// The request was made and the server responded with a status code that falls out of the range of 2xx
-				return res.status(error.response.status).send(error.response.data);
-			}
-			if (error.request) {
-				// The request was made but no response was received `error.request` is an instance of http.ClientRequest in node.js
-				return res.status(400).send(error.request);
-			}
-			return res.status(400).send(error.message);
-		});
-	}
-);
+		.catch(error => res.status(400).send({error: error.message}))
+});
+
 
 app.post("/api/getAllStocks", (req, res, next) => {
-	let stocks = null;
-	let promises = null;
 
-	db.getAllStocks()
-		.then(response => {
-			if (!response.length) { res.send(""); }
-			stocks = response.map(item => item.code);
-			promises = stocks.map(stock => axiosJS.get(stock, "1m"));
+	db.getUpdateTime()
+		.then(db => {
+			if (db) {
+				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
+				const oneDayMilisecs = 12 * 60 * 60 * 1000; //hrs:mins:secs:milisecs = 86400000
+				const dataMoreThan12hOld = (startOfDayMilisecs - db.updatedUTC.getTime()) > oneDayMilisecs;
 
-			Promise.all(promises)
-				.then(resp => res.send(resp.map(item => item.data)))
-				.catch(err => res.status(400).send({error: err.message}));
-
+				// DATA MORE THAN DAY OLD
+				if (dataMoreThan12hOld) {
+					return helper.refreshAndReturnData(res); // TESTING OK!!!
+				}
+				return helper.mergeAndReturnData(res); // TESTING OK!!!
+			}
+			return res.send("no data");
 		})
-		.catch(err => res.status(400).send({error: err.message}));
+		.catch(error => res.status(400).send({error: error.message}))
 });
 
 app.post("/api/removeStock", (req, res, next) => {
 	const stock = mongoSanitize(req.body.stock.trim());
 	if (stock === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
-	db.removeStock(req, res, next, stock)
-		.then(() => res.status(200).send())
-		.catch(error => res.status(400).send({error: err.message}));
+	db.removeStock(stock)
+		.then(() => res.status(200).send("OK"))
+		.catch(error => res.status(400).send(error));
 	}
 );
 
 
 
-// PUT ALL ROUTES ABOVE THIS LINE OF CODE!
-// "*" NEEDED FOR REACT ROUTER HISTORY LIB
+// PUT ALL ROUTES ABOVE THIS LINE OF CODE! "*" NEEDED FOR REACT ROUTER HISTORY LIB
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "dist", "index.html")));
 
 

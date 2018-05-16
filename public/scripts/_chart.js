@@ -2,22 +2,23 @@
 
 import * as d3 from "d3";
 
-export default () => {
+
+export default (data) => {
 	// container object's width and height
 	const winSize = +window.innerWidth;
-	const w = +window.innerWidth > 660 ? +window.innerWidth * 0.7 : +window.innerWidth; // same as in responsive CSS
+	const w = +window.innerWidth > 660 ? winSize * 0.7 : winSize; // same as in responsive CSS
 	const h = +window.innerHeight / 1.2;
 	const margin = {
 		top: 100,
 		bottom: 120,
-		left: +window.innerWidth < 999 ? 40 : 80,
+		left: winSize < 999 ? 40 : 80,
 		right: 20
 	};
 	const width = w - margin.left - margin.right;
 	const height = h - margin.top - margin.bottom;
 
 
-	const poll = JSON.parse(event.response).data;
+	const poll = data;
 	const data = poll.options.map(item => ({ key: item[0], value: item[1] }));
 	const max = d3.max(data, entry => entry.value);
 
