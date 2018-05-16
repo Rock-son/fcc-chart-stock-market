@@ -16,17 +16,17 @@ export default class Content extends React.Component {
 		super();
 
 		this.state = {
-			input: "", stocks: [], stockDscrptn: {}, componentErr: "", duration: "1m", stockErr: ""
+			input: "", stocks: [], stockDscrptn: {}, componentErr: "", stockErr: ""
 		};
 		this.stockData = null;
 		this.input = React.createRef();
 		this.searchBtn = React.createRef();
 
-		this.handleEnterPress = this.handleEnterPress.bind(this);
 		this.addStock = this.addStock.bind(this);
-		this.selectAllOnEnter = this.selectAllOnEnter.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 		this.removeStock = this.removeStock.bind(this);
+		this.handleEnterPress = this.handleEnterPress.bind(this);
+		this.selectAllOnEnter = this.selectAllOnEnter.bind(this);
 	}
 
 	componentDidMount() {
@@ -35,20 +35,15 @@ export default class Content extends React.Component {
 		axios.getAllStocks()
 			.then((response) => {
 				if (!response.data.length) { return ""; }
-				/*
-				try {
-					// => RESULT = [ [ date, value1, value2, ... ] ]
-					for (let j = 0; j < chart[0].length; j += 1) {
-				for (let i = 0; i < chart.length; i += 1) {
-							subResult.push(chart[i][j].close);
-						}
-						result.push([chart[0][j].date, subResult].reduce((acc, curr) => acc.concat(curr), []));
-						subResult.length = 0;
-					}
-				} catch (error) {
-					return this.setState({ stockErr: error });
-				}
-				*/
+				// GET FROM  [{quote:{symbol:"tsla"}, chart: []}] TO:  [[{id: "tsla", values: [{date: chart.date, value: chart.close}, ...]}], [{...}], ...]
+				const chart = response.data.map(resp => ({
+					id: (resp.quote || { symbol: "no data" }).symbol,
+					values: resp.chart.map(values => ({
+						date: values.date,
+						price: values.close
+					}))
+				}));
+				this.stockData = chart.slice(0);
 				this.setState({
 					stocks: response.data.map(item => item.quote.symbol),
 					stockErr: "",
@@ -95,16 +90,17 @@ export default class Content extends React.Component {
 	}
 	addStock(e) {
 		e.preventDefault();
-		const stock = this.state.input.trim();
-		const duration = this.state.duration.trim();
-		if (!stock || !duration) { return; }
-
+		const stock = this.state.input.trim().toUpperCase();
+		if (!stock) {
+			this.setState({ stockErr: "You need to input stock code first!" });
+			return;
+		}
 		if (this.state.stocks.indexOf(stock) > -1) {
 			this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock already selected!` });
 			return;
 		}
 
-		axios.addStock(stock, duration)
+		axios.addStock(stock)
 			.then(
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
