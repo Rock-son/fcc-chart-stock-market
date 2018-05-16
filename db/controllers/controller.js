@@ -40,22 +40,38 @@ exports.removeStock = function (code) {
 	.catch(err => ({error: err.message}));
 };
 
+
+exports.addStock = function (code, stockData) {
+
+	return StockChart.findOne({ code })
+		.then(result => {
 		// IF STOCK DOES NOT exist - save it else return next()
-		if (!result) {
+			if (stockData) {
 			const newStock = new StockChart({
-				name: "test",
-				code
+					name: stockData.quote.companyName,
+					code: stockData.quote.symbol,
+					quote: {
+						change: stockData.quote.change,
+						changePercent: stockData.quote.changePercent * 100,
+						close: stockData.quote.close,
+						companyName: stockData.quote.companyName,
+						latestTime: stockData.quote.latestTime,
+					},
+					chart: {
+						id: stockData.quote.symbol,
+						values: stockData.chart.map(row => ({ date: row.date, price: row.close}))
+					}
 			});
-			newStock.save(function (err) {
+				return newStock.save(function(err) {
 				if (err) { return err; }
 
-				return "test";
+					return newStock;
 			});
 		} else {
-			return "test";
+				return new Error('No stock data supplied!');
 		}
 	})
-	.catch(err => err);
+		.catch(err => {error: err.message})
 };
 
 exports.removeStock = function (req, res, next, code) {
