@@ -4,17 +4,23 @@ const { StockChart } = require("../models/StockChart");
 const createHash = require("./modules/_createHash").default;
 const getClientIp = require("./modules/getIp").default;
 
-exports.getAllStocks = function () {
+exports.getAllStockCodes = function () {
 	return StockChart.find({}, {_id: 0, code: 1}, function(err, results) {
 		if (err) { return err; }
 
 		return results || [];
-	});
+	})
+	.catch(err => ({error: err.message}));
 };
 
+exports.getAllData = function () {
+	return StockChart.find({}, {_id: 0, quote: 1, chart: 1 }, function(err, results) {
+		if (err) { return err; }
 
-exports.addStock = function (req, res, next, code) {
-	return StockChart.findOne({ "code": code }, function(err, result) {
+		return results || [];
+	})
+	.catch(err => ({error: err.message}));
+};
 		if (err) { return err; }
 
 		// IF STOCK DOES NOT exist - save it else return next()
