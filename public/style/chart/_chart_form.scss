@@ -11,11 +11,12 @@
 	text-align: center;
 	overflow: auto;
 	background-color: #333;
+	border-radius: 0 0 5px 5px;
 	z-index: -1;
 	&__container {
 		margin: 1%;
 		width: 23%;
-		min-width: 200px;
+		min-width: 320px;
 		max-height: 150px;
 		font-weight: 300;
 		text-align: left;
@@ -94,14 +95,14 @@
 					color: #eeeeff;
 					background-color: #09f924;
 				}
-				&__value {
-					float: right;
-					font-size: 1rem;
-					font-weight: 700;
-					padding: .6rem .8rem;
-					color: #333;
-					cursor: help;
-				}
+			}
+			&__value {
+				float: right;
+				font-size: 1rem;
+				font-weight: 700;
+				padding: .6rem .8rem;
+				color: #333;
+				cursor: help;
 			}
 		}
 		&__inputs {
