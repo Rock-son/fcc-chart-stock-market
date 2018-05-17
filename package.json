@@ -1,10 +1,10 @@
 {
-  "name": "fcc-nightlife-coordination-app",
+  "name": "fcc-chart-stock-market",
   "version": "1.0.0",
   "engines": {
     "node": "8.9.1"
   },
-  "description": "night-life-coordination-app",
+  "description": "Chart stock line graph",
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node server.js",
@@ -23,14 +23,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rock-son/fcc-nightlife-coordination-app.git"
+	"url": "git+https://github.com/Rock-son/fcc-chart-stock-market.git"
   },
   "author": "RZ",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Rock-son/fcc-nightlife-coordination-app/issues"
+    "url": "https://github.com/Rock-son/fcc-chart-stock-market/issues"
   },
-  "homepage": "https://github.com/Rock-son/fcc-nightlife-coordination-app#readme",
+  "homepage": "https://github.com/Rock-son/fcc-chart-stock-market#readme",
   "dependencies": {
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
