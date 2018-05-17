@@ -74,14 +74,6 @@
 					color: #09f924;
 				}
 			}
-			&__value {
-				float: right;
-				font-size: 1rem;
-				font-weight: 700;
-				padding: .6rem .8rem;
-				color: #333;
-				cursor: help;
-			}
 			&__trend {
 				float: right;
 				font-size: 1rem;
@@ -91,6 +83,9 @@
 				border-radius: 5px;
 				cursor: help;
 				text-shadow: 0.2px 0.5px 2px #040404;
+				& .span {
+					color: #949494;
+				}
 				&[data="negative"] {
 					color:#eee;
 					background-color: #fb7f7f;
@@ -98,6 +93,14 @@
 				&[data="positive"] {
 					color: #eeeeff;
 					background-color: #09f924;
+				}
+				&__value {
+					float: right;
+					font-size: 1rem;
+					font-weight: 700;
+					padding: .6rem .8rem;
+					color: #333;
+					cursor: help;
 				}
 			}
 		}

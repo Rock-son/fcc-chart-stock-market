@@ -34,24 +34,16 @@ export default class Content extends React.Component {
 
 		axios.getAllStocks()
 			.then((response) => {
-				if (!response.data.length) { return ""; }
-				// GET FROM  [{quote:{symbol:"tsla"}, chart: []}] TO:  [[{id: "tsla", values: [{date: chart.date, value: chart.close}, ...]}], [{...}], ...]
-				const chart = response.data.map(resp => ({
-					id: (resp.quote || { symbol: "no data" }).symbol,
-					values: resp.chart.map(values => ({
-						date: values.date,
-						price: values.close
-					}))
-				}));
-				this.stockData = chart.slice(0);
+				if (!response.data.length) { return; }
+				this.stockData = response.data.map(resp => resp.chart);
 				this.setState({
-					stocks: response.data.map(item => item.quote.symbol),
+					stocks: response.data.map(item => item.quote.code),
 					stockErr: "",
 					componentErr: "",
-					stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.symbol]: cur.quote }), {})
+					stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.code]: cur.quote }), {})
 				});
 			})
-			.catch(err => err);
+			.catch(err => this.setState({ stockErr: err.message }));
 	}
 
 	componentDidCatch(error/* , info */) {
@@ -68,7 +60,7 @@ export default class Content extends React.Component {
 	removeStock(e) {
 		e.preventDefault();
 		if ((e.keyCode === 13 || e.type === "click") && ((e.currentTarget || {}).id || "").trim()) {
-			const stock = e.currentTarget.id;
+			const stock = e.currentTarget.id || "";
 			axios.removeStock(stock)
 				.then(
 					() => {
@@ -85,7 +77,7 @@ export default class Content extends React.Component {
 						}
 					},
 					reason => this.setState({ stockErr: reason })
-				).catch(err => this.setState({ stockErr: err }));
+				).catch(err => this.setState({ stockErr: err.message }));
 		}
 	}
 	addStock(e) {
@@ -104,13 +96,13 @@ export default class Content extends React.Component {
 			.then(
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
-					if (stock && typeof response.data === "object") {
+					if (typeof response.data === "object") {
 						this.setState(prevState => (
 							{
 								stocks: [...prevState.stocks, stock],
 								stockErr: "",
 								componentErr: "",
-								stockDscrptn: { ...prevState.stockDscrptn, [stock]: response.data.chartData.quote }
+								stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.code]: cur.quote }), {})
 							}
 						));
 					} else {
@@ -151,15 +143,15 @@ export default class Content extends React.Component {
 
 					(this.state.stocks.map((stock) => {
 						const {
-							change, close, companyName, latestTime, previousClose
+							change, close, companyName, latestTime, changePercent
 						} = this.state.stockDscrptn[stock] || {};
 						return (
 							<div key={stock} className="chart__form__container">
 								<div id={stock} role="button" className="chart__form__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
 								<div className="chart__form__container__head" >
 									<div className="chart__form__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
-									<div className="chart__form__container__head__trend" title={latestTime} data={change < 0 ? "negative" : "positive"} >{change}</div>
-									<div className="chart__form__container__head__value" title={previousClose} data={change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
+									<div className="chart__form__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{changePercent.toFixed(3)}<span className="span"> %</span></div>
+									<div className="chart__form__container__head__value" title={+close + +change} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
 								</div>
 								<div className="chart__form__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
 							</div>

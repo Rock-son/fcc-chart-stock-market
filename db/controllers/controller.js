@@ -51,6 +51,7 @@ exports.addStock = function (code, stockData) {
 					name: stockData.quote.companyName,
 					code: stockData.quote.symbol,
 					quote: {
+						code: stockData.quote.symbol,
 						change: stockData.quote.change,
 						changePercent: stockData.quote.changePercent * 100,
 						close: stockData.quote.close,
@@ -79,6 +80,7 @@ exports.updateStock = function (code, stockData) {
 
 	return StockChart.findOneAndUpdate({ code }, {
 			quote: {
+				code: stockData.quote.symbol,
 				change: stockData.quote.change,
 				changePercent: stockData.quote.changePercent * 100,
 				close: stockData.quote.close,
