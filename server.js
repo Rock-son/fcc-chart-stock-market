@@ -111,8 +111,12 @@ app.post("/api/removeStock", (req, res, next) => {
 	if (stock === "") { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
 	db.removeStock(stock)
-		.then(() => res.status(200).send("OK"))
-		.catch(error => res.status(400).send(error));
+		.then(() => {
+			db.getAllData()
+				.then(response => res.send(response))
+				.catch(error => res.status(400).send({error: error.message}));
+		})
+		.catch(error => res.status(400).send({error: error.message}));
 	}
 );
 
