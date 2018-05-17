@@ -4,6 +4,7 @@ import React from "react";
 import xss from "xss-filters";
 
 import axios from "../../scripts/api";
+import chart from "../../scripts/chart/index";
 
 // import chart from "./_chart";
 
@@ -18,7 +19,6 @@ export default class Content extends React.Component {
 		this.state = {
 			input: "", stocks: [], stockDscrptn: {}, componentErr: "", stockErr: ""
 		};
-		this.stockData = null;
 		this.input = React.createRef();
 		this.searchBtn = React.createRef();
 
@@ -34,8 +34,7 @@ export default class Content extends React.Component {
 
 		axios.getAllStocks()
 			.then((response) => {
-				if (!response.data.length) { return; }
-				this.stockData = response.data.map(resp => resp.chart);
+				chart(response.data.map(resp => resp.chart));
 				this.setState({
 					stocks: response.data.map(item => item.quote.code),
 					stockErr: "",
@@ -63,7 +62,9 @@ export default class Content extends React.Component {
 			const stock = e.currentTarget.id || "";
 			axios.removeStock(stock)
 				.then(
-					() => {
+					(response) => {
+						chart(response.data.map(resp => resp.chart));
+
 						const stockIdx = this.state.stocks.indexOf(stock);
 						if (stockIdx > -1) {
 							this.setState(prevState => (
@@ -97,6 +98,7 @@ export default class Content extends React.Component {
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
 					if (typeof response.data === "object") {
+						chart(response.data.map(resp => resp.chart));
 						this.setState(prevState => (
 							{
 								stocks: [...prevState.stocks, stock],
@@ -150,8 +152,8 @@ export default class Content extends React.Component {
 								<div id={stock} role="button" className="chart__form__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
 								<div className="chart__form__container__head" >
 									<div className="chart__form__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
-									<div className="chart__form__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{changePercent.toFixed(3)}<span className="span"> %</span></div>
-									<div className="chart__form__container__head__value" title={+close + +change} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
+									<div className="chart__form__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{changePercent.toFixed(2)}<span className="span"> %</span></div>
+									<div className="chart__form__container__head__value" title={(+close - +change).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
 								</div>
 								<div className="chart__form__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
 							</div>

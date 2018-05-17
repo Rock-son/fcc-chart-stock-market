@@ -1,0 +1,26 @@
+
+line{
+	stroke: rgba(101, 101, 101, 0.9);
+}
+#chart {
+	position: absolute;
+    background-color: #5a5a5a;
+    margin: 2% 0 0 10%;
+    border-radius: 5px 5px 0 0;
+}
+.chart-title {
+	font-size:	3rem;
+	color: #555;
+}
+.x-axis-label {
+	fill: #bbb;
+}
+.domain, .tick {
+	stroke: #bbb;
+}
+.text-caption {
+    text-shadow: 1px -1px 1px #fff, 1px -1px 1px #000;
+}
+.gridline {
+	fill: #000;
+}
