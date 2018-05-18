@@ -4,16 +4,18 @@ line{
 }
 #chart {
 	position: absolute;
-    background-color: #5a5a5a;
-    margin: 2% 0 0 10%;
+    background-color: transparent;
+	margin-left: 7%;
     border-radius: 5px 5px 0 0;
 }
 .chart-title {
-	font-size:	3rem;
-	color: #555;
+	font-size:	2rem;
+	fill: #ddd;
+	font-variant: small-caps;
 }
-.x-axis-label {
-	fill: #bbb;
+.x-axis-label, .y-axis-label {
+	stroke: #fff;
+    font-size: 1rem;
 }
 .domain, .tick {
 	stroke: #bbb;
@@ -22,5 +24,6 @@ line{
     text-shadow: 1px -1px 1px #fff, 1px -1px 1px #000;
 }
 .gridline {
-	fill: #000;
+	fill: #333;
+    fill: rgba(0,0,0,0.7);
 }

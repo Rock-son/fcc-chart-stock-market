@@ -28,6 +28,7 @@ export default function drawAxis(params) {
 	// draw axis anchors
 	this.select(".y.axis")
 		.append("text")
+		.classed("y-axis-label", true)
 		.text("Votes")
 		.attr("x", 0)
 		.attr("y", 15)
@@ -40,7 +41,7 @@ export default function drawAxis(params) {
 		.attr("dx", params.width / 2)
 		.attr("dy", 50)
 		.style("fill", "steelblue")
-		.style("font-size", "0.8rem")
+		.style("font-size", "1.2rem")
 		.style("text-anchor", "middle");
 	this.select(".x.axis")
 		.append("a")
