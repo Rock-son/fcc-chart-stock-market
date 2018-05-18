@@ -20,7 +20,6 @@ exports.refreshAndReturnData = function b(res, symbol) {
 	let dbStocks = null;
 	let promises = null;
 	let updatePromises = null;
-	let newStockData = null;
 	const code = (symbol || "").toUpperCase();
 
 	db.getAllStockCodes()
@@ -32,17 +31,18 @@ exports.refreshAndReturnData = function b(res, symbol) {
 			if (code && dbStocks.indexOf(code) === -1) {
 				return axiosJS.get(code, "1y")
 					.then((respApi) => {
-						newStockData = respApi.data === "Unknown symbol" ? false : respApi.data;
+						if (respApi.data === "Unknown symbol") {
+							return res.status(400).send("Unkown symbol");
+						}
 
 						promises = dbStocks.map(stock => axiosJS.get(stock, "1y")); // API CALL
 						Promise.all(promises)
 							.then((apiResults) => {
 								const data = apiResults.map(item => item.data);
-								updatePromises = data.map(item => db.updateStock(item.quote.symbol, item));
 
-								if (newStockData) {
-									updatePromises.push(db.addStock(newStockData.quote.symbol, newStockData));
-								}
+								updatePromises = data.map(item => db.updateStock(item.quote.symbol, item));
+								updatePromises.push(db.addStock(respApi.data.quote.symbol, respApi.data));
+
 								return Promise.all(updatePromises)	// DB CALL
 									.then(updateResult => res.send(updateResult.map(item => ({ quote: item.quote, chart: item.chart }))))
 									.catch(err => res.status(400).send({ error: err.message }));
@@ -81,19 +81,21 @@ exports.mergeAndReturnData = function c(res, symbol) {
 			// IF STOCK NOT ALREADY IN DB - MAKE API CALL, SAVE IT AND RETURN COMBINED DATA
 			if (stock && dbStocks.indexOf(stock) === -1) {
 				return axiosJS.get(stock, "1y")	// API CALL
-					.then(respApi => db.getAllData()
-						.then((respDB) => {
-							if (respApi.data === "Unknown symbol") {
-								return res.send(respDB); // RETURN ONLY DB DATA
-							}
-							return db.addStock(stock, respApi.data) //	ELSE SAVE TO DB
-								.then((_resp_) => {
-									const newStockData = [{ quote: _resp_.quote, chart: _resp_.chart }];
-									return res.send(respDB.concat(newStockData)); 	//	RETURN COMBINED
-								})
-								.catch(err => res.status(400).send({ error: err.message }));
-						})
-						.catch(err => res.status(400).send({ error: err.message })))
+					.then((respApi) => {
+						if (respApi.data === "Unknown symbol") {
+							return res.status(400).send("Unkown symbol");
+						}
+						db.getAllData()
+							.then((respDB) => {
+								return db.addStock(stock, respApi.data) //	ELSE SAVE TO DB
+									.then((_resp_) => {
+										const newStockData = [{ quote: _resp_.quote, chart: _resp_.chart }];
+										return res.send(respDB.concat(newStockData)); 	//	RETURN COMBINED
+									})
+									.catch(err => res.status(400).send({ error: err.message }));
+							})
+							.catch(err => res.status(400).send({ error: err.message }));
+					})
 					.catch(err => res.status(400).send({ error: err.message }));
 			}
 			// IF NO NEW STOCK OR IS ALREADY IN DB - JUST RETURN ALL DATA FROM DB
