@@ -399,18 +399,21 @@ line {
 
 #chart {
   position: absolute;
-  background-color: #5a5a5a;
-  margin: 2% 0 0 10%;
+  background-color: transparent;
+  margin-left: 7%;
   border-radius: 5px 5px 0 0;
 }
 
 .chart-title {
-  font-size: 3rem;
-  color: #555;
+  font-size: 2rem;
+  fill: #ddd;
+  font-variant: small-caps;
 }
 
-.x-axis-label {
-  fill: #bbb;
+.x-axis-label,
+.y-axis-label {
+  stroke: #fff;
+  font-size: 1rem;
 }
 
 .domain,
@@ -423,7 +426,8 @@ line {
 }
 
 .gridline {
-  fill: #000;
+  fill: #333;
+  fill: rgba(0, 0, 0, 0.7);
 }
 
 .chart__form {
@@ -446,9 +450,19 @@ line {
   flex-direction: row-reverse;
   text-align: center;
   overflow: auto;
-  background-color: #333;
+  background-color: transparent;
   border-radius: 0 0 5px 5px;
+}
+
+.chart__form__hero {
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  position: fixed;
   z-index: -1;
+  width: 100%;
+  height: 100%;
 }
 
 .chart__form__container {
@@ -460,7 +474,8 @@ line {
   text-align: left;
   letter-spacing: .5px;
   border: .5px solid #3e0a0a;
-  background-color: #fff;
+  background-color: #333;
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 5px;
   -webkit-box-shadow: 0px 0px 5px white;
   box-shadow: 0px 0px 5px white;
@@ -558,7 +573,7 @@ line {
   font-size: 1rem;
   font-weight: 700;
   padding: .6rem .8rem;
-  color: #333;
+  color: #bbb;
   cursor: help;
 }
 
@@ -587,7 +602,7 @@ line {
 
 .chart__form__container__description span {
   font-weight: 700;
-  color: #111;
+  color: #fff;
 }
 
 .chart__form__container__error {
@@ -630,4 +645,4 @@ line {
 .footer__codedby__link:visited {
   color: #333;
 }
-/*# sourceMappingURL=bundle.e33ab66f77fa2633b54519b4ab7ace69.css.map*/
+/*# sourceMappingURL=bundle.13b30861b3e69e26a7ec0b96123fd3ff.css.map*/

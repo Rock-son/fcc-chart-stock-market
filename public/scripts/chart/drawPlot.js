@@ -33,7 +33,7 @@ export default function (params) {
 		.attr("fill", d => params.zScale(d.id))
 		.attr("x", 3)
 		.attr("dy", "0.35em")
-		.style("font", "10px sans-serif")
+		.style("font", ".8rem sans-serif")
 		.text(d => d.id);
 	/*
 	// update
