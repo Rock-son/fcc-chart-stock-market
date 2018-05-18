@@ -19,6 +19,7 @@ export default class Content extends React.Component {
 		this.state = {
 			input: "", stocks: [], stockDscrptn: {}, componentErr: "", stockErr: ""
 		};
+		this.stocks = []; // needed for immediate stock updating, state updates only after Promise return!
 		this.input = React.createRef();
 		this.searchBtn = React.createRef();
 
@@ -35,6 +36,8 @@ export default class Content extends React.Component {
 		axios.getAllStocks()
 			.then((response) => {
 				chart(response.data.map(resp => resp.chart));
+				this.stocks = response.data.map(item => item.quote.code);
+
 				this.setState({
 					stocks: response.data.map(item => item.quote.code),
 					stockErr: "",
@@ -60,6 +63,8 @@ export default class Content extends React.Component {
 		e.preventDefault();
 		if ((e.keyCode === 13 || e.type === "click") && ((e.currentTarget || {}).id || "").trim()) {
 			const stock = e.currentTarget.id || "";
+			this.stocks.splice(this.stocks.indexOf(stock), 1);
+
 			axios.removeStock(stock)
 				.then(
 					(response) => {
@@ -88,16 +93,17 @@ export default class Content extends React.Component {
 			this.setState({ stockErr: "You need to input stock code first!" });
 			return;
 		}
-		if (this.state.stocks.indexOf(stock) > -1) {
+		if (this.stocks.indexOf(stock) > -1) {
 			this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock already selected!` });
 			return;
 		}
+		this.stocks.push(stock);
 
 		axios.addStock(stock)
 			.then(
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
-					if (typeof response.data === "object") {
+					if (typeof response.data === "object" && response.data !== "Unkown symbol") {
 						chart(response.data.map(resp => resp.chart));
 						this.setState(prevState => (
 							{
@@ -126,10 +132,11 @@ export default class Content extends React.Component {
 	}
 
 	render() {
-		// const responseImg = "./assets/images/pexels-photo-260920.jpeg 640w, ./assets/images/pexels-photo-260921.jpeg 1280w, ./assets/images/pexels-photo-260922.jpeg 1920w";
+		const responseImg = "./assets/images/pexels-photo-260920.jpeg 640w, ./assets/images/pexels-photo-260921.jpeg 1280w, ./assets/images/pexels-photo-260922.jpeg 1920w";
 
 		return (
 			<div className="chart__form" >
+				<img className="chart__form__hero" srcSet={responseImg} alt="StocPhoto.jpeg" />
 				<div className="chart__form__container" >
 					<div className="chart__form__container__head" >
 						<h4 className="chart__form__container__head__header" >Syncs stocks in realtime across clients</h4>
@@ -152,8 +159,8 @@ export default class Content extends React.Component {
 								<div id={stock} role="button" className="chart__form__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
 								<div className="chart__form__container__head" >
 									<div className="chart__form__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
-									<div className="chart__form__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{changePercent.toFixed(2)}<span className="span"> %</span></div>
-									<div className="chart__form__container__head__value" title={(+close - +change).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
+									<div className="chart__form__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{(changePercent || 0).toFixed(2)}<span className="span"> %</span></div>
+									<div className="chart__form__container__head__value" title={((+close - +change)||0).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
 								</div>
 								<div className="chart__form__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
 							</div>
