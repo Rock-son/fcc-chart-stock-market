@@ -7,10 +7,13 @@ import Chart from "Chart";
 import Footer from "Footer";
 import css from "../../style/chart/index";
 
-export default () => (
+export default () => {
 
-	<div className="chart">
-		<Chart />
-		<Footer />
-	</div>
-);
+	return (
+		<div className="chart">
+			<Chart />
+			<Footer />
+			<div className="chart-container" />
+		</div>
+	);
+};

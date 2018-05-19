@@ -1,5 +1,8 @@
 "use strict";
 
+import * as d3 from "d3";
+
+import drawNewStocks from "./helpers/plotHelpers";
 import drawAxis from "./drawAxis";
 
 export default function (params) {
@@ -7,53 +10,36 @@ export default function (params) {
 	drawAxis.call(this, params);
 
 	/* eslint-disable indent */ // enter
-	const stock = this.selectAll(".stock")
-		.data(params.data)
-		.enter()
-			.append("g")
-			.attr("class", "stock");
-	/* eslint-enable */
+	if (params.initialize === true) {
+		drawNewStocks.call(this, params);
+	} else {
+		this.selectAll(".stock .line")
+				.attr("d", function a() {
+					return d3.select(this).attr('d');
+				})
+				.transition()
+				.duration(1500)
+				.attr("d", d => params.line(d.values))
+				.style("stroke", d => params.zScale(d.id));
 
-	// update
-	stock.append("path")
-		.attr("class", "line")
-		.attr("fill", "none")
-		.attr("stroke", "steelblue")
-		.attr("stroke-linejoin", "round")
-		.attr("stroke-linecap", "round")
-		.attr("stroke-width", 1.5)
-		.attr("d", d => params.line(d.values))
-		.style("stroke", d => params.zScale(d.id));
-
-
-	stock.append("text")
-		.datum(d => ({ id: d.id, value: d.values[d.values.length - 1] }))
-		.attr("transform", d => `translate(${params.xScale(d.value.date) + 5},${params.yScale(d.value.price)})`)
-		.attr("class", "text-caption")
-		.attr("fill", d => params.zScale(d.id))
-		.attr("x", 3)
-		.attr("dy", "0.35em")
-		.style("font", ".8rem sans-serif")
-		.text(d => d.id);
-	/*
-	// update
-		this.selectAll(".bar-label")
-				.data(params.data)
-				.enter()
-					.append("text")
-					.classed("bar-label", true);
-	// remove
-	this.selectAll(".bar-label")
-		.data(params.data)
-		.exit()
-		.remove();
+		if (params.removeStock) {
+			setTimeout(() => this.selectAll(`.${params.removeStock}`).remove(), 1400);
+		}
+/*
+		this.selectAll(".stock .text-caption")
+				.attr("transform", function a() {
+					return d3.select(this).attr('transform');
+				})
+				.transition()
+				.duration(1500)
+				.ease("linear", 1, 0.3)
+				.attr("transform", d => `translate(${params.xScale(d.value.date) - 60},${params.yScale(d.value.price)})`);
 */
-	// exit()
-	this.selectAll(".stock")
-		.data(params.data)
-		.exit()
-		.remove();
+
+		setTimeout(() => drawNewStocks.call(this, params), 400);
+	}
 }
+
 
 /*
   function handleMouseOver(d, i) {
@@ -80,3 +66,5 @@ export default function (params) {
 		   .style("left", 0);
   }
 */
+
+/* eslint-enable */
