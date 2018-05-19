@@ -5,11 +5,12 @@ import * as d3 from "d3";
 import drawNewStocks from "./helpers/plotHelpers";
 import drawAxis from "./drawAxis";
 
+/* eslint-disable indent */
 export default function (params) {
 	// draw the axes
 	drawAxis.call(this, params);
 
-	/* eslint-disable indent */ // enter
+	// enter
 	if (params.initialize === true) {
 		drawNewStocks.call(this, params);
 	} else {
@@ -22,20 +23,18 @@ export default function (params) {
 				.attr("d", d => params.line(d.values))
 				.style("stroke", d => params.zScale(d.id));
 
-		if (params.removeStock) {
-			setTimeout(() => this.selectAll(`.${params.removeStock}`).remove(), 1400);
-		}
-/*
-		this.selectAll(".stock .text-caption")
+		this.selectAll("g.stock")
+				.selectAll(".text-caption")
 				.attr("transform", function a() {
 					return d3.select(this).attr('transform');
 				})
 				.transition()
 				.duration(1500)
-				.ease("linear", 1, 0.3)
 				.attr("transform", d => `translate(${params.xScale(d.value.date) - 60},${params.yScale(d.value.price)})`);
-*/
 
+		if (params.removeStock) {
+			setTimeout(() => this.select(`.stock.${params.removeStock}`).remove(), 1400);
+		}
 		setTimeout(() => drawNewStocks.call(this, params), 400);
 	}
 }
