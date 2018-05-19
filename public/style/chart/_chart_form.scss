@@ -1,12 +1,30 @@
-.chart__form {
+.chart {
+    background-color: transparent;
+}
+.chart-container {
+    color: #999;
+    position: absolute;
+    background-color: transparent;
+    width: 83%;
+    height: 97%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 1%;
+	box-shadow: 0px 0px 55px #000000;
+	border-radius: 15px;
+    z-index: -1;
+}
+.cards {
 	position: absolute;
     bottom: 2%;
     width: 80%;
-    height: 30vh;
+    height: 40vh;
 	margin-left: 10%;
 	display: inline-flex;
 	flex-wrap: wrap;
-	justify-content: end;
+	justify-content: center;
 	flex-direction: row-reverse;
 	text-align: center;
 	overflow: auto;
@@ -34,7 +52,7 @@
 		background-color: #333;
 		background-color: rgba(0,0,0,0.7);
 		border-radius: 5px;
-		box-shadow: 0px 0px 5px white;
+		box-shadow: 0px 0px 25px #fb18ff;
 		&:first-child {
 			background-color: #3c3c3c;
 			box-shadow: 0px 0px 1px #28ce3c;

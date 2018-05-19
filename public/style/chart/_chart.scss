@@ -5,22 +5,29 @@ line{
 #chart {
 	position: absolute;
     background-color: transparent;
-	margin-left: 7%;
-    border-radius: 5px 5px 0 0;
+	margin-left: 12.5%;
+	border-radius: 5px 5px 0 0;
 }
 .chart-title {
 	font-size:	2rem;
 	fill: #ddd;
 	font-variant: small-caps;
 }
-.x-axis-label, .y-axis-label {
-	stroke: #fff;
-    font-size: 1rem;
+.tick {
+	stroke: #eaeaea;
+    font-size: .7rem;
+    font-variant: all-small-caps;
+    letter-spacing: 1px;
+    text-shadow: 1px -1px 1px #333;
 }
-.domain, .tick {
+.x-axis-label {
+    stroke: #59ff00;
+    text-shadow: 1px -1px 1px #000000;
+}
+.domain {
 	stroke: #bbb;
 }
-.text-caption {
+.stock-caption {
     text-shadow: 1px -1px 1px #fff, 1px -1px 1px #000;
 }
 .gridline {
