@@ -61,8 +61,8 @@ export default class Content extends React.Component {
 
 	removeStock(e) {
 		e.preventDefault();
-		if ((e.keyCode === 13 || e.type === "click") && ((e.currentTarget || {}).id || "").trim()) {
-			const stock = e.currentTarget.id || "";
+		if ((e.keyCode === 13 || e.type === "click") && ((e.currentTarget || {}).getAttribute("data") || "").trim()) {
+			const stock = e.currentTarget.getAttribute("data") || "";
 			this.stocks.splice(this.stocks.indexOf(stock), 1);
 
 			axios.removeStock(stock)
@@ -109,6 +109,7 @@ export default class Content extends React.Component {
 					if (typeof response.data === "object" && response.data !== "Unkown symbol") {
 
 						chart(response.data.map(resp => resp.chart), false);
+						this.input.current.click();
 						this.setState(prevState => (
 							{
 								stocks: [...prevState.stocks, stock],
@@ -159,8 +160,8 @@ export default class Content extends React.Component {
 							change, close, companyName, latestTime, changePercent
 						} = this.state.stockDscrptn[stock] || {};
 						return (
-							<div key={stock} className="cards__container">
-								<div id={stock} role="button" className="cards__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
+							<div key={stock} className="cards__container" data={change < 0 ? "negative" : "positive"} >
+								<div data={stock} role="button" className="cards__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
 								<div className="cards__container__head" >
 									<div className="cards__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
 									<div className="cards__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{(changePercent || 0).toFixed(2)}<span className="span"> %</span></div>
