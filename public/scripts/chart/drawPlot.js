@@ -20,8 +20,7 @@ export default function (params) {
 				})
 				.transition()
 				.duration(1500)
-				.attr("d", d => params.line(d.values))
-				.style("stroke", d => params.zScale(d.id));
+				.attr("d", d => params.line(d.values));
 
 		this.selectAll("g.stock")
 				.selectAll(".text-caption")
@@ -33,7 +32,7 @@ export default function (params) {
 				.attr("transform", d => `translate(${params.xScale(d.value.date) - 60},${params.yScale(d.value.price)})`);
 
 		if (params.removeStock) {
-			setTimeout(() => this.select(`.stock.${params.removeStock}`).remove(), 1400);
+			setTimeout(() => this.select(`#${params.removeStock}`).remove(), 400);
 		}
 		setTimeout(() => drawNewStocks.call(this, params), 400);
 	}
