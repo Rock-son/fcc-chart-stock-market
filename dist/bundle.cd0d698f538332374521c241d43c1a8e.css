@@ -8,7 +8,7 @@
 body {
   font-family: "Helvetica Neue", Calibri, sans-serif;
   color: #999;
-  background-color: #bbb;
+  background-color: #074380;
 }
 
 .test {
@@ -400,7 +400,7 @@ line {
 #chart {
   position: absolute;
   background-color: transparent;
-  margin-left: 7%;
+  margin-left: 12.5%;
   border-radius: 5px 5px 0 0;
 }
 
@@ -410,18 +410,24 @@ line {
   font-variant: small-caps;
 }
 
-.x-axis-label,
-.y-axis-label {
-  stroke: #fff;
-  font-size: 1rem;
+.tick {
+  stroke: #eaeaea;
+  font-size: .7rem;
+  font-variant: all-small-caps;
+  letter-spacing: 1px;
+  text-shadow: 1px -1px 1px #333;
 }
 
-.domain,
-.tick {
+.x-axis-label {
+  stroke: #59ff00;
+  text-shadow: 1px -1px 1px #000000;
+}
+
+.domain {
   stroke: #bbb;
 }
 
-.text-caption {
+.stock-caption {
   text-shadow: 1px -1px 1px #fff, 1px -1px 1px #000;
 }
 
@@ -430,20 +436,41 @@ line {
   fill: rgba(0, 0, 0, 0.7);
 }
 
-.chart__form {
+.chart {
+  background-color: transparent;
+}
+
+.chart-container {
+  color: #999;
+  position: absolute;
+  background-color: transparent;
+  width: 83%;
+  height: 97%;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 1%;
+  -webkit-box-shadow: 0px 0px 55px #000000;
+  box-shadow: 0px 0px 55px #000000;
+  border-radius: 15px;
+  z-index: -1;
+}
+
+.cards {
   position: absolute;
   bottom: 2%;
   width: 80%;
-  height: 30vh;
+  height: 40vh;
   margin-left: 10%;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: end;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: reverse;
   -ms-flex-direction: row-reverse;
@@ -454,7 +481,7 @@ line {
   border-radius: 0 0 5px 5px;
 }
 
-.chart__form__hero {
+.cards__hero {
   top: 0;
   right: 0;
   left: 0;
@@ -465,7 +492,7 @@ line {
   height: 100%;
 }
 
-.chart__form__container {
+.cards__container {
   margin: 1%;
   width: 23%;
   min-width: 320px;
@@ -477,21 +504,21 @@ line {
   background-color: #333;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 5px white;
-  box-shadow: 0px 0px 5px white;
+  -webkit-box-shadow: 0px 0px 25px #fb18ff;
+  box-shadow: 0px 0px 25px #fb18ff;
 }
 
-.chart__form__container:first-child {
+.cards__container:first-child {
   background-color: #3c3c3c;
   -webkit-box-shadow: 0px 0px 1px #28ce3c;
   box-shadow: 0px 0px 1px #28ce3c;
 }
 
-.chart__form__container:first-child .chart__form__container__head {
+.cards__container:first-child .cards__container__head {
   margin-bottom: 2%;
 }
 
-.chart__form__container__close {
+.cards__container__close {
   float: right;
   color: #fff;
   background-color: #fb7f7f;
@@ -507,25 +534,25 @@ line {
   cursor: pointer;
 }
 
-.chart__form__container__close:hover {
+.cards__container__close:hover {
   background-color: #e94c4c;
 }
 
-.chart__form__container__close:active {
+.cards__container__close:active {
   border: .5px inset #999;
 }
 
-.chart__form__container__head {
+.cards__container__head {
   width: 85%;
   margin: 7% 0 5% 5%;
 }
 
-.chart__form__container__head:first-child .chart__form__container__head__header {
+.cards__container__head:first-child .cards__container__head__header {
   font-size: 1rem;
   color: #09f924;
 }
 
-.chart__form__container__head__header {
+.cards__container__head__header {
   display: inline-block;
   color: #111;
   font-weight: 700;
@@ -535,15 +562,15 @@ line {
   text-shadow: -0.2px -0.5px 5px #000;
 }
 
-.chart__form__container__head__header[data="negative"] {
+.cards__container__head__header[data="negative"] {
   color: #fb7f7f;
 }
 
-.chart__form__container__head__header[data="positive"] {
+.cards__container__head__header[data="positive"] {
   color: #09f924;
 }
 
-.chart__form__container__head__trend {
+.cards__container__head__trend {
   float: right;
   font-size: 1rem;
   font-weight: 700;
@@ -554,21 +581,21 @@ line {
   text-shadow: 0.2px 0.5px 2px #040404;
 }
 
-.chart__form__container__head__trend .span {
+.cards__container__head__trend .span {
   color: #949494;
 }
 
-.chart__form__container__head__trend[data="negative"] {
+.cards__container__head__trend[data="negative"] {
   color: #eee;
   background-color: #fb7f7f;
 }
 
-.chart__form__container__head__trend[data="positive"] {
+.cards__container__head__trend[data="positive"] {
   color: #eeeeff;
   background-color: #09f924;
 }
 
-.chart__form__container__head__value {
+.cards__container__head__value {
   float: right;
   font-size: 1rem;
   font-weight: 700;
@@ -577,16 +604,16 @@ line {
   cursor: help;
 }
 
-.chart__form__container__inputs {
+.cards__container__inputs {
   width: 17.8rem;
   padding: 0 0 10% 5%;
 }
 
-.chart__form__container__inputs__text {
+.cards__container__inputs__text {
   width: 70%;
 }
 
-.chart__form__container__inputs__button {
+.cards__container__inputs__button {
   width: 30%;
   color: #e8d5e8;
   background-color: #09f924;
@@ -594,18 +621,18 @@ line {
   text-shadow: 0px 0px 1px #d60000, 0px 0px 1px #43442e, 1px -1px 2px #5bb95e;
 }
 
-.chart__form__container__description {
+.cards__container__description {
   width: 90%;
   padding: 0 0 10% 5%;
   color: #aaa;
 }
 
-.chart__form__container__description span {
+.cards__container__description span {
   font-weight: 700;
   color: #fff;
 }
 
-.chart__form__container__error {
+.cards__container__error {
   color: red;
   margin-left: 5%;
   font-weight: 700;
@@ -630,7 +657,7 @@ line {
 }
 
 .footer__codedby {
-  color: #333;
+  color: #bbb;
 }
 
 .footer__codedby__link {
@@ -643,6 +670,6 @@ line {
 }
 
 .footer__codedby__link:visited {
-  color: #333;
+  color: #bbb;
 }
-/*# sourceMappingURL=bundle.13b30861b3e69e26a7ec0b96123fd3ff.css.map*/
+/*# sourceMappingURL=bundle.cd0d698f538332374521c241d43c1a8e.css.map*/
