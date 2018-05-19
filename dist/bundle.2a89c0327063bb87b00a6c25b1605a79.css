@@ -508,6 +508,11 @@ line {
   box-shadow: 0px 0px 25px #fb18ff;
 }
 
+.cards__container[data="positive"] {
+  -webkit-box-shadow: 0px 0px 25px #09f924;
+  box-shadow: 0px 0px 25px #09f924;
+}
+
 .cards__container:first-child {
   background-color: #3c3c3c;
   -webkit-box-shadow: 0px 0px 1px #28ce3c;
@@ -672,4 +677,4 @@ line {
 .footer__codedby__link:visited {
   color: #bbb;
 }
-/*# sourceMappingURL=bundle.cd0d698f538332374521c241d43c1a8e.css.map*/
+/*# sourceMappingURL=bundle.2a89c0327063bb87b00a6c25b1605a79.css.map*/
