@@ -33,9 +33,4 @@ export default function drawNewStocks(params) {
 		.data(params.data)
 		.exit()
 		.remove();
-
-	this.selectAll(".stock .line")
-		.data(params.data)
-		.exit()
-		.remove();
 }
