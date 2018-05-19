@@ -6,7 +6,8 @@ export default function drawNewStocks(params) {
 		.data(params.data)
 		.enter()
 		.append("g")
-		.attr("class", d => `stock ${d.id}`);
+		.classed("stock", true)
+		.attr("id", d => d.id);
 
 	stock.append("path")
 		.attr("class", d => `line`)
@@ -28,9 +29,11 @@ export default function drawNewStocks(params) {
 		.style("font", ".8rem sans-serif")
 		.text(d => d.id);
 
+/*
 	// exit()
 	this.selectAll(".stock")
 		.data(params.data)
 		.exit()
 		.remove();
+*/
 }
