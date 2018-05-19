@@ -31,7 +31,7 @@ export default class Content extends React.Component {
 	}
 
 	componentDidMount() {
-		this.input.current.focus();
+		this.input.current.click();
 
 		axios.getAllStocks()
 			.then((response) => {
@@ -72,6 +72,7 @@ export default class Content extends React.Component {
 
 						const stockIdx = this.state.stocks.indexOf(stock);
 						if (stockIdx > -1) {
+							this.input.current.click();
 							this.setState(prevState => (
 								{
 									stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)),
@@ -90,10 +91,12 @@ export default class Content extends React.Component {
 		e.preventDefault();
 		const stock = this.state.input.trim().toUpperCase();
 		if (!stock) {
+			this.input.current.click();
 			this.setState({ stockErr: "You need to input stock code first!" });
 			return;
 		}
 		if (this.stocks.indexOf(stock) > -1) {
+			this.input.current.click();
 			this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock already selected!` });
 			return;
 		}
