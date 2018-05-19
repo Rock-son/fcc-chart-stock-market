@@ -50,7 +50,7 @@ export default class Content extends React.Component {
 
 	componentDidCatch(error/* , info */) {
 		// Display fallback UI
-		this.setState({ componentErr: error });
+		this.setState({ componentErr: error.message });
 	}
 
 	handleEnterPress(e) {
@@ -68,7 +68,7 @@ export default class Content extends React.Component {
 			axios.removeStock(stock)
 				.then(
 					(response) => {
-						chart(response.data.map(resp => resp.chart));
+						chart(response.data.map(resp => resp.chart), false, stock);
 
 						const stockIdx = this.state.stocks.indexOf(stock);
 						if (stockIdx > -1) {
@@ -104,7 +104,8 @@ export default class Content extends React.Component {
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
 					if (typeof response.data === "object" && response.data !== "Unkown symbol") {
-						chart(response.data.map(resp => resp.chart));
+
+						chart(response.data.map(resp => resp.chart), false);
 						this.setState(prevState => (
 							{
 								stocks: [...prevState.stocks, stock],
@@ -132,20 +133,20 @@ export default class Content extends React.Component {
 	}
 
 	render() {
-		const responseImg = "./assets/images/pexels-photo-260920.jpeg 640w, ./assets/images/pexels-photo-260921.jpeg 1280w, ./assets/images/pexels-photo-260922.jpeg 1920w";
+		// const responseImg = "./assets/images/pexels-photo-260920.jpeg 640w, ./assets/images/pexels-photo-260921.jpeg 1280w, ./assets/images/pexels-photo-260922.jpeg 1920w";
 
 		return (
-			<div className="chart__form" >
-				<img className="chart__form__hero" srcSet={responseImg} alt="StocPhoto.jpeg" />
-				<div className="chart__form__container" >
-					<div className="chart__form__container__head" >
-						<h4 className="chart__form__container__head__header" >Syncs stocks in realtime across clients</h4>
+			<div className="cards" >
+				{/* <img className="cards__hero" srcSet={responseImg} alt="StocPhoto.jpeg" /> */}
+				<div className="cards__container" >
+					<div className="cards__container__head" >
+						<h4 className="cards__container__head__header" >Syncs stocks in realtime across clients</h4>
 					</div>
-					<div className="chart__form__container__inputs" >
-						<input type="text" className="chart__form__container__inputs__text" ref={this.input} placeholder="Stock code" value={this.state.input} onClick={this.selectAllOnEnter} onChange={this.handleInput} onKeyUp={this.handleEnterPress} />
-						<input type="button" className="chart__form__container__inputs__button" ref={this.searchBtn} value="Add" onClick={this.addStock} />
+					<div className="cards__container__inputs" >
+						<input type="text" className="cards__container__inputs__text" ref={this.input} placeholder="Stock code" value={this.state.input} onClick={this.selectAllOnEnter} onChange={this.handleInput} onKeyUp={this.handleEnterPress} />
+						<input type="button" className="cards__container__inputs__button" ref={this.searchBtn} value="Add" onClick={this.addStock} />
 					</div>
-					<div className="chart__form__container__error" >{this.state.stockErr ? this.state.stockErr : ""}</div>
+					<div className="cards__container__error" >{this.state.stockErr ? this.state.stockErr : ""}</div>
 				</div>
 				{(this.state.componentErr) ?
 					(<h2 className="content__cards__error">{this.state.componentErr}</h2>) :
@@ -155,14 +156,14 @@ export default class Content extends React.Component {
 							change, close, companyName, latestTime, changePercent
 						} = this.state.stockDscrptn[stock] || {};
 						return (
-							<div key={stock} className="chart__form__container">
-								<div id={stock} role="button" className="chart__form__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
-								<div className="chart__form__container__head" >
-									<div className="chart__form__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
-									<div className="chart__form__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{(changePercent || 0).toFixed(2)}<span className="span"> %</span></div>
-									<div className="chart__form__container__head__value" title={((+close - +change)||0).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
+							<div key={stock} className="cards__container">
+								<div id={stock} role="button" className="cards__container__close" tabIndex={0} onClick={this.removeStock} onKeyUp={this.removeStock}>x</div>
+								<div className="cards__container__head" >
+									<div className="cards__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
+									<div className="cards__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{(changePercent || 0).toFixed(2)}<span className="span"> %</span></div>
+									<div className="cards__container__head__value" title={((+close - +change)||0).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
 								</div>
-								<div className="chart__form__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
+								<div className="cards__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
 							</div>
 						);
 					}))
