@@ -35,15 +35,17 @@ export default class Content extends React.Component {
 
 		axios.getAllStocks()
 			.then((response) => {
-				chart(response.data.map(resp => resp.chart));
-				this.stocks = response.data.map(item => item.quote.code);
+				if (response.data) {
+					chart(response.data.map(resp => resp.chart));
+					this.stocks = response.data.map(item => item.quote.code);
 
-				this.setState({
-					stocks: response.data.map(item => item.quote.code),
-					stockErr: "",
-					componentErr: "",
-					stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.code]: cur.quote }), {})
-				});
+					this.setState({
+						stocks: response.data.map(item => item.quote.code),
+						stockErr: "",
+						componentErr: "",
+						stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.code]: cur.quote }), {})
+					});
+				}
 			})
 			.catch(err => this.setState({ stockErr: err.message }));
 	}
@@ -68,19 +70,21 @@ export default class Content extends React.Component {
 			axios.removeStock(stock)
 				.then(
 					(response) => {
-						chart(response.data.map(resp => resp.chart), false, stock);
+						if (response.data) {
+							chart(response.data.map(resp => resp.chart), false, stock);
 
-						const stockIdx = this.state.stocks.indexOf(stock);
-						if (stockIdx > -1) {
-							this.input.current.click();
-							this.setState(prevState => (
-								{
-									stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)),
-									stockErr: "",
-									componentErr: "",
-									stockDscrptn: { ...prevState.stockDscrptn, [stock]: {} }
-								}));
-							this.input.current.click();
+							const stockIdx = this.state.stocks.indexOf(stock);
+							if (stockIdx > -1) {
+								this.input.current.click();
+								this.setState(prevState => (
+									{
+										stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)),
+										stockErr: "",
+										componentErr: "",
+										stockDscrptn: { ...prevState.stockDscrptn, [stock]: {} }
+									}));
+								this.input.current.click();
+							}
 						}
 					},
 					reason => this.setState({ stockErr: reason })
@@ -107,7 +111,6 @@ export default class Content extends React.Component {
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
 					if (typeof response.data === "object" && response.data !== "Unkown symbol") {
-
 						chart(response.data.map(resp => resp.chart), false);
 						this.input.current.click();
 						this.setState(prevState => (

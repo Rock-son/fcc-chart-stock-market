@@ -8,7 +8,6 @@ import Footer from "Footer";
 import css from "../../style/chart/index";
 
 export default () => {
-
 	return (
 		<div className="chart">
 			<Chart />
