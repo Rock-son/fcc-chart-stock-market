@@ -4,9 +4,9 @@ import * as d3 from "d3";
 
 import plot from "./drawPlot";
 import zoomFunction from "./helpers/zoom";
-import onMouseOver from "./helpers/onMouseOver";
+import { mouseLeave } from "./helpers/mouseEvents";
 
-export default function (pollData, initialize = true, removeStock = null) {
+export default function (pollData, initialize = true, removeStock = null, addStock = null) {
 	// container object's width and height
 	const winSize = +window.innerWidth;
 	const w = winSize > 660 ? winSize * 0.75 : winSize * 0.95; // same as in responsive CSS
@@ -15,7 +15,9 @@ export default function (pollData, initialize = true, removeStock = null) {
 		top: 60,
 		bottom: 60,
 		left: winSize < 999 ? 40 : 80,
-		right: 60
+		right: 60,
+		w,
+		h
 	};
 	const width = w - margin.left - margin.right;
 	const height = h - margin.top - margin.bottom;
@@ -35,10 +37,10 @@ export default function (pollData, initialize = true, removeStock = null) {
 	/* eslint-disable indent */
 		const parseTime = d3.timeFormat("%d.%b");
 		const data = pollData.map(stock => ({ id: stock.id, values: stock.values.map(value => ({ date: new Date(value.date), price: +value.price })) }));
-		const description = "Powered by http://iextrading.com";
+		const description = "Powered by: https://iextrading.com";
 		let chart = null;
 		const x = d3.scaleTime()
-			.domain([	d3.min(data, c => d3.min(c.values, d => d.date)),
+			.domain([d3.min(data, c => d3.min(c.values, d => d.date)),
 						d3.max(data, c => d3.max(c.values, d => d.date))])
 			.range([0, width]);
 		const y = d3.scaleLinear()
@@ -74,25 +76,11 @@ export default function (pollData, initialize = true, removeStock = null) {
 		chart = svg.append("g")
 						.classed("display", true)
 						.attr("transform", `translate(${margin.left}, ${margin.top})`)
+						.on("mouseover", mouseLeave)
 						.call(zoom);
 		d3.select('body')
 					.append('div')
 					.classed("tooltip", true);
-
-		const tooltipData = data.reduce((acc, cur) => Object.assign(acc, { [cur.id]: cur.values, dates: cur.values.map(item => item.date) }), {});
-		// APPEND ZOOM AREA
-		svg.append("rect")
-				.classed("zoom", true)
-				.attr("transform", `translate(${margin.left}, ${margin.top})`)
-				.attr("width", width)
-				.attr("height", height)
-				.call(zoom)
-				.on("mousemove", onMouseOver.bind(this, tooltipData, x));
-		svg.append("path")
-				.attr("visibility", "visible")
-				.attr("class", "tooltipLine")
-				.attr("d", "M 0 0 L 0 0");
-
 		chart.append('text')
 			.classed("chart-title", true)
 			.html("Stocks")
@@ -108,6 +96,8 @@ export default function (pollData, initialize = true, removeStock = null) {
 
 		plot.call(chart, {
 			removeStock,
+			addStock,
+			margin,
 			height,
 			width,
 			description,
