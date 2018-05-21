@@ -42,23 +42,23 @@ export default function drawAxis(params) {
 		// draw description texts
 		this.select(".x.axis")
 			.append("text")
-			.text(params.description.slice(0, params.description.indexOf("http") - 4))
+			.text(params.description.slice(0, params.description.indexOf("http")))
 			.attr("dx", params.width / 2)
-			.attr("dy", 50)
-			.style("fill", "steelblue")
-			.style("font-size", "1.2rem")
+			.attr("dy", 40)
+			.style("fill", "rgb(0, 253, 3)")
+			.style("font-size", "1rem")
 			.style("text-anchor", "middle");
 		this.select(".x.axis")
 			.append("a")
 			.classed("svglink", true)
-				.attr("xlink:href", params.description.slice(params.description.indexOf("http"), -1))
+				.attr("xlink:href", params.description.slice(params.description.indexOf("http")))
 				.attr("xlink:show", "new")
 				.append('text')
-				.text(params.description.slice(params.description.indexOf("http"), -1))
-				.attr("dx", params.width / 2)
-				.attr("dy", 70)
-				.style("fill", "steelblue")
-				.style("font-size", "0.8rem")
+				.text(params.description.slice(params.description.indexOf("http")))
+				.attr("dx", (params.width / 2) + 125)
+				.attr("dy", 40)
+				.style("fill", "rgb(0, 253, 3)")
+				.style("font-size", "1rem")
 				.style("text-anchor", "middle");
 	} else if (params.initialize === false) {
 		// update gridlines
