@@ -1,7 +1,6 @@
 "use strict";
 
-
-export default function drawNewStocks(params) {
+export default function (params) {
 	const stock = this.selectAll(".stock")
 		.data(params.data)
 		.enter()
@@ -28,12 +27,4 @@ export default function drawNewStocks(params) {
 		.attr("dy", "0.35em")
 		.style("font", ".8rem sans-serif")
 		.text(d => d.id);
-
-/*
-	// exit()
-	this.selectAll(".stock")
-		.data(params.data)
-		.exit()
-		.remove();
-*/
 }

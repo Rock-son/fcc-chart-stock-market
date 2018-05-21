@@ -3,7 +3,8 @@
 import * as d3 from "d3";
 
 import plot from "./drawPlot";
-
+import zoomFunction from "./helpers/zoom";
+import onMouseOver from "./helpers/onMouseOver";
 
 export default function (pollData, initialize = true, removeStock = null) {
 	// container object's width and height
@@ -36,7 +37,6 @@ export default function (pollData, initialize = true, removeStock = null) {
 		const data = pollData.map(stock => ({ id: stock.id, values: stock.values.map(value => ({ date: new Date(value.date), price: +value.price })) }));
 		const description = "Powered by http://iextrading.com";
 		let chart = null;
-		let tooltip = null;
 		const x = d3.scaleTime()
 			.domain([	d3.min(data, c => d3.min(c.values, d => d.date)),
 						d3.max(data, c => d3.max(c.values, d => d.date))])
@@ -50,7 +50,7 @@ export default function (pollData, initialize = true, removeStock = null) {
 		const line = d3.line()
 						.x(d => x(d.date))
 						.y(d => y(d.price))
-        				.curve(d3.curveLinear);
+						.curve(d3.curveLinear);
 		const yGridLines = d3.axisLeft()
 								.scale(y)
 								.tickSize(-width, 0, 0)
@@ -62,6 +62,8 @@ export default function (pollData, initialize = true, removeStock = null) {
 							.scale(y)
 							.tickSize(3, 0, 0)
 							.ticks(d3.max(data, c => d3.max(c.values, d => d.data)));
+		const zoom = d3.zoom()
+						.on("zoom", zoomFunction.bind(this, x, xAxis));
 
 	if (initialize === true) {
 		const svg = d3.select("body")
@@ -71,10 +73,25 @@ export default function (pollData, initialize = true, removeStock = null) {
 						.attr("height", h);
 		chart = svg.append("g")
 						.classed("display", true)
-						.attr("transform", `translate(${margin.left}, ${margin.top})`);
-		tooltip = d3.select('body')
-						.append('div')
-						.classed("tooltip", true);
+						.attr("transform", `translate(${margin.left}, ${margin.top})`)
+						.call(zoom);
+		d3.select('body')
+					.append('div')
+					.classed("tooltip", true);
+
+		const tooltipData = data.reduce((acc, cur) => Object.assign(acc, { [cur.id]: cur.values, dates: cur.values.map(item => item.date) }), {});
+		// APPEND ZOOM AREA
+		svg.append("rect")
+				.classed("zoom", true)
+				.attr("transform", `translate(${margin.left}, ${margin.top})`)
+				.attr("width", width)
+				.attr("height", height)
+				.call(zoom)
+				.on("mousemove", onMouseOver.bind(this, tooltipData, x));
+		svg.append("path")
+				.attr("visibility", "visible")
+				.attr("class", "tooltipLine")
+				.attr("d", "M 0 0 L 0 0");
 
 		chart.append('text')
 			.classed("chart-title", true)
@@ -93,7 +110,6 @@ export default function (pollData, initialize = true, removeStock = null) {
 			removeStock,
 			height,
 			width,
-			tooltip,
 			description,
 			data,
 			line,
