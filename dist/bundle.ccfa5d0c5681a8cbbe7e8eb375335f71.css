@@ -9,6 +9,8 @@ body {
   font-family: "Helvetica Neue", Calibri, sans-serif;
   color: #999;
   background-color: #074380;
+  background: url("/assets/images/pexels-photo-260920.jpeg") no-repeat center center fixed;
+  background-size: cover;
 }
 
 .test {
@@ -394,7 +396,7 @@ template {
 }
 
 line {
-  stroke: rgba(101, 101, 101, 0.9);
+  stroke: rgba(255, 255, 255, 0.15);
 }
 
 #chart {
@@ -436,6 +438,28 @@ line {
   fill: rgba(0, 0, 0, 0.7);
 }
 
+.tooltip {
+  opacity: 1;
+  position: absolute;
+}
+
+.tooltipLine {
+  stroke: #59ff00;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+
+.zoom {
+  fill: none;
+  pointer-events: all;
+  /*
+	cursor: move;
+	cursor: grab;
+	*/
+}
+
 .chart {
   background-color: transparent;
 }
@@ -443,7 +467,7 @@ line {
 .chart-container {
   color: #999;
   position: absolute;
-  background-color: transparent;
+  background-color: rgba(1, 18, 27, 0.7);
   width: 83%;
   height: 97%;
   margin: auto;
@@ -677,4 +701,4 @@ line {
 .footer__codedby__link:visited {
   color: #bbb;
 }
-/*# sourceMappingURL=bundle.2a89c0327063bb87b00a6c25b1605a79.css.map*/
+/*# sourceMappingURL=bundle.ccfa5d0c5681a8cbbe7e8eb375335f71.css.map*/
