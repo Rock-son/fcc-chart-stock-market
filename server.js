@@ -70,12 +70,12 @@ app.post("/api/addStock", async (req, res, next) => {
 	db.getUpdateTime()
 		.then(db => {
 			if (db) {
-				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
+				const now = Date.now();
 				const _7hrsMilisecs = 7 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
-				const dataOlderThan17_00PreviousDay = (startOfDayMilisecs - db.updatedUTC.getTime()) > _7hrsMilisecs;
+				const dataOlderThan7hrs = (now - db.updatedUTC.getTime()) > _7hrsMilisecs;
 
 				// MERGE DB AND API DATA AND RETURN
-				if (!dataOlderThan17_00PreviousDay) {
+				if (!dataOlderThan7hrs) {
 					return helper.mergeAndReturnData(res, stock); // TESTING OK!!!
 				}
 			}
@@ -91,16 +91,17 @@ app.post("/api/getAllStocks", (req, res, next) => {
 	db.getUpdateTime()
 		.then(db => {
 			if (db) {
-				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
+				const now = Date.now();
 				const _7hrsMilisecs = 7 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
-				const dataOlderThan17_00PreviousDay = (startOfDayMilisecs - db.updatedUTC.getTime()) > _7hrsMilisecs;
+				const dataOlderThan7hrs = (now - db.updatedUTC.getTime()) > _7hrsMilisecs;
 
 				// REFRESH API DATA, SAVE AND RETURN
-				if (dataOlderThan17_00PreviousDay) {
+				if (dataOlderThan7hrs) {
 					return helper.refreshAndReturnData(res); // TESTING OK!!!
 				}
 				return helper.mergeAndReturnData(res); // TESTING OK!!!
 			}
+			console.log("wtf");
 			return res.send("");
 		})
 		.catch(error => res.status(400).send({error: error.message}))

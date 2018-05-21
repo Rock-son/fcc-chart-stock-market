@@ -1,6 +1,7 @@
 
 line{
 	stroke: rgba(255, 255, 255, 0.15);
+	cursor: none;
 }
 #chart {
 	position: absolute;
@@ -27,25 +28,41 @@ line{
 .domain {
 	stroke: #bbb;
 }
+.stock {
+	cursor: none;
+}
 .stock-caption {
     text-shadow: 1px -1px 1px #fff, 1px -1px 1px #000;
 }
 .gridline {
 	fill: #333;
     fill: rgba(0,0,0,0.7);
+	cursor: none;
 }
 .tooltip {
 	opacity: 1;
 	position: absolute;
+	pointer-events: none;
 }
 .tooltipLine {
-	stroke: #59ff00;
+	stroke: #d9efd9;
 	fill: none;
 	stroke-linejoin:round;
 	stroke-linecap:round;
-	stroke-width:1.5;
+	stroke-width: 1;
+}
+.point-shadows {
+	opacity: .6;
+}
+.svglink {
+	text-decoration: underline;
+	&:hover {
+		cursor: pointer;
+	}
 }
 .zoom {
+	z-index: 20;
+	cursor: none;
 	fill: none;
 	pointer-events: all;
 	/*

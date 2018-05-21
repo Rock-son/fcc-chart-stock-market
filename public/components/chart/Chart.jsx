@@ -111,7 +111,7 @@ export default class Content extends React.Component {
 				(response) => {
 					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
 					if (typeof response.data === "object" && response.data !== "Unkown symbol") {
-						chart(response.data.map(resp => resp.chart), false);
+						chart(response.data.map(resp => resp.chart), false, null, stock);
 						this.input.current.click();
 						this.setState(prevState => (
 							{

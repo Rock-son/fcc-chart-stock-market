@@ -21,9 +21,9 @@ exports.getAllData = function () {
 	})
 	.catch(err => ({error: err.message}));
 };
-
+// GETUPDATETIME FINDS THE FIRST ONE, WHICH IS ALSO THE OLDEST!
 exports.getUpdateTime = function (code) {
-	return StockChart.findOne({}, {_id: 0, updatedUTC: 1}, function(err, result) {
+	return StockChart.findOne({}, {_id: 0, updatedUTC: 1}, { sort: { updatedUTC: 1}}, function(err, result) {
 		if (err) { return err; }
 
 		return result;
