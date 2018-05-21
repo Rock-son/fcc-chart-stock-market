@@ -10,7 +10,7 @@ const path = require("path");
 const fs = require("fs");
 const bodyParser = require("body-parser");
 // ROUTES
-const helper = require("./db/controllers/modules/helpers");
+const helper = require("./db/controllers/helpers");
 const getClientIp = require("./db/controllers/modules/getIp").default;
 // SECURITY
 const helmet = require("./security/helmet");
@@ -71,15 +71,15 @@ app.post("/api/addStock", async (req, res, next) => {
 		.then(db => {
 			if (db) {
 				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
-				const oneDayMilisecs = 12 * 60 * 60 * 1000; //hrs:mins:secs:milisecs = 86400000
-				const dataMoreThan12hOld = (startOfDayMilisecs - db.updatedUTC.getTime()) > oneDayMilisecs;
+				const _7hrsMilisecs = 7 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+				const dataOlderThan17_00PreviousDay = (startOfDayMilisecs - db.updatedUTC.getTime()) > _7hrsMilisecs;
 
-				// DATA NOT MORE THAN HALF DAY OLD - MERGE DB AND API DATA AND RETURN
-				if (!dataMoreThan12hOld) {
+				// MERGE DB AND API DATA AND RETURN
+				if (!dataOlderThan17_00PreviousDay) {
 					return helper.mergeAndReturnData(res, stock); // TESTING OK!!!
 				}
 			}
-			// NO DATA IN DB || DATA OLDER THAN HALF A DAY - UPDATE, SAVE AND RETURN
+			// NO DATA IN DB || DATA OLDER THAN 17:00 LAST DAY - UPDATE, SAVE AND RETURN
 			return helper.refreshAndReturnData(res, stock);
 		})
 		.catch(error => res.status(400).send({error: error.message}))
@@ -92,16 +92,16 @@ app.post("/api/getAllStocks", (req, res, next) => {
 		.then(db => {
 			if (db) {
 				const startOfDayMilisecs = new Date().setHours(0,0,0,0);
-				const oneDayMilisecs = 12 * 60 * 60 * 1000; //hrs:mins:secs:milisecs = 86400000
-				const dataMoreThan12hOld = (startOfDayMilisecs - db.updatedUTC.getTime()) > oneDayMilisecs;
+				const _7hrsMilisecs = 7 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+				const dataOlderThan17_00PreviousDay = (startOfDayMilisecs - db.updatedUTC.getTime()) > _7hrsMilisecs;
 
-				// DATA MORE THAN DAY OLD
-				if (dataMoreThan12hOld) {
+				// REFRESH API DATA, SAVE AND RETURN
+				if (dataOlderThan17_00PreviousDay) {
 					return helper.refreshAndReturnData(res); // TESTING OK!!!
 				}
 				return helper.mergeAndReturnData(res); // TESTING OK!!!
 			}
-			return res.send("no data");
+			return res.send("");
 		})
 		.catch(error => res.status(400).send({error: error.message}))
 });
