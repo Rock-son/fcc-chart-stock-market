@@ -1,6 +1,6 @@
 
 line{
-	stroke: rgba(47, 36, 36, 0.9);
+	stroke: rgba(255, 255, 255, 0.15);
 }
 #chart {
 	position: absolute;
@@ -33,4 +33,26 @@ line{
 .gridline {
 	fill: #333;
     fill: rgba(0,0,0,0.7);
+}
+.tooltip {
+	opacity: 1;
+	position: absolute;
+}
+.tooltipLine {
+	stroke: #59ff00;
+	fill: none;
+	stroke-linejoin:round;
+	stroke-linecap:round;
+	stroke-width:1.5;
+}
+.zoom {
+	fill: none;
+	pointer-events: all;
+	/*
+	cursor: move;
+	cursor: grab;
+	*/
+}
+.zoom:active {
+	// cursor: grabbing;
 }
