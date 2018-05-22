@@ -30,7 +30,14 @@ export function mouseMove(data, xScale, yScale) {
 		.attr("cx", d => xScale(d.values[idx].date))
 		.attr("cy", d => yScale(d.values[idx].price));
 }
-
+/* eslint-disable prefer-arrow-callback */
+export function mouseClick(selection, idx, data, xScale, yScale) {
+	selection
+		.attr("title", idx)
+		.attr("cx", function a(d) { return xScale(d.values[idx].date); })
+		.attr("cy", function a(d) { return yScale(d.values[idx].price); });
+}
+/* eslint-enable */
 export function mouseEnter() {
 	d3.select(".tooltip")
 		.attr("visibility", "visible");
