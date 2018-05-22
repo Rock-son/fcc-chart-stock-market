@@ -14,7 +14,7 @@ export default function (params) {
 		.attr("stroke", "steelblue")
 		.attr("stroke-linejoin", "round")
 		.attr("stroke-linecap", "round")
-		.attr("stroke-width", 1.5)
+		.attr("stroke-width", 2)
 		.attr("d", d => params.line(d.values))
 		.style("stroke", d => params.zScale(d.id));
 

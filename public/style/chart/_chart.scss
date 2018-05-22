@@ -43,6 +43,38 @@ line{
 	opacity: 1;
 	position: absolute;
 	pointer-events: none;
+	border: 1px solid #999;
+	padding: 10px;
+	min-width: 8.8rem;
+    border-radius: 10px;
+    background-color: #212121;
+	font-size: .7rem;
+	font-variant: small-caps;
+	&__header {
+		padding-bottom: .2rem;
+		color: #fff;
+		text-align: center;
+	}
+	&__list {
+		font-size: .8rem;
+		list-style: none;
+		min-width: 80%;
+		padding-left: .2rem;
+		margin: 0.1rem;
+		&__item:before {
+			content: "• ";
+			color: inherit;
+			margin-right: .3rem;
+		}
+	}
+	& span.heavy {
+		font-weight: 700;
+		color: inherit;
+	}
+	& span.normal {
+		float: right;
+		color: #fff;
+	}
 }
 .tooltipLine {
 	stroke: #d9efd9;
@@ -54,8 +86,13 @@ line{
 .point-shadows {
 	opacity: .6;
 }
+.cross-points {
+	stroke: silver;
+	stroke-width: .5;
+}
 .svglink {
 	text-decoration: underline;
+	transform: translateX(-5%);
 	&:hover {
 		cursor: pointer;
 	}

@@ -15,6 +15,7 @@ export default function (params) {
 		drawNewStocks.call(this, params);
 		drawTooltipPoints.call(this, params);
 	} else {
+		// UPDATE STOCKS
 		this.selectAll(".stock .line")
 				.attr("d", function a() {
 					return d3.select(this).attr('d');
@@ -31,7 +32,7 @@ export default function (params) {
 				.transition()
 				.duration(1500)
 				.attr("transform", d => `translate(${params.xScale(d.value.date) - 60},${params.yScale(d.value.price)})`);
-
+		// UPDATE TOOTLTIP POINTS
 		d3.selectAll(`circle:not(.${params.removeStock})`)
 				.attr("cx", function a() {
 					return d3.select(this).attr('cx');
@@ -56,38 +57,11 @@ export default function (params) {
 				this.select(`#${params.removeStock}`).remove();
 			}, 400);
 		}
+		// DRAW OR UPDATE NEW STOCKS AND TOOLTIP POINTS
 		setTimeout(() => {
 			drawNewStocks.call(this, params);
 			drawTooltipPoints.call(this, params);
 		}, 400);
 	}
 }
-
-
-/*
-  function handleMouseOver(d, i) {
-
-	var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-	d3.select(this).attr("fill", "orange");
-	tooltip.html('<span style="font-size: 1rem; font-weight: 700;">' + d[1].toLocaleString({useGrouping: true, maximumFractionDigits: 4}) +
-				 "$ Billion</span>" + '<br><span">' + new Date(d[0]).getFullYear() + ' - ' + months[new Date(d[0]).getMonth()] +'</span>')
-		   .transition()
-		   .duration(0)
-		   .style("left", (d3.event.pageX + 15) + "px")
-		   .style("top", (d3.event.pageY - 50) + "px")
-		   .style("opacity", .7);
-  }
-  function handleMouseOut(d, i) {
-
-	d3.select(this).attr(
-			  "fill", "steelblue"
-			);
-	tooltip.transition()
-		   .duration(300)
-		   .style("opacity", 0)
-		   .style("top", 0)
-		   .style("left", 0);
-  }
-*/
-
 /* eslint-enable */

@@ -47,7 +47,8 @@ export default function drawAxis(params) {
 			.attr("dy", 40)
 			.style("fill", "rgb(0, 253, 3)")
 			.style("font-size", "1rem")
-			.style("text-anchor", "middle");
+			.style("text-anchor", "middle")
+			.style("transform", "translateX(-5%)");
 		this.select(".x.axis")
 			.append("a")
 			.classed("svglink", true)
