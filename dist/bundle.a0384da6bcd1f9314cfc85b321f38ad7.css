@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 *,
 *::after,
 *::before {
@@ -448,6 +450,43 @@ line {
   opacity: 1;
   position: absolute;
   pointer-events: none;
+  border: 1px solid #999;
+  padding: 10px;
+  min-width: 8.8rem;
+  border-radius: 10px;
+  background-color: #212121;
+  font-size: .7rem;
+  font-variant: small-caps;
+}
+
+.tooltip__header {
+  padding-bottom: .2rem;
+  color: #fff;
+  text-align: center;
+}
+
+.tooltip__list {
+  font-size: .8rem;
+  list-style: none;
+  min-width: 80%;
+  padding-left: .2rem;
+  margin: 0.1rem;
+}
+
+.tooltip__list__item:before {
+  content: "\2022   ";
+  color: inherit;
+  margin-right: .3rem;
+}
+
+.tooltip span.heavy {
+  font-weight: 700;
+  color: inherit;
+}
+
+.tooltip span.normal {
+  float: right;
+  color: #fff;
 }
 
 .tooltipLine {
@@ -462,8 +501,15 @@ line {
   opacity: .6;
 }
 
+.cross-points {
+  stroke: silver;
+  stroke-width: .5;
+}
+
 .svglink {
   text-decoration: underline;
+  -webkit-transform: translateX(-5%);
+  transform: translateX(-5%);
 }
 
 .svglink:hover {
@@ -722,4 +768,4 @@ line {
 .footer__codedby__link:visited {
   color: #bbb;
 }
-/*# sourceMappingURL=bundle.2b7220da329583807a649ffd10f908a7.css.map*/
+/*# sourceMappingURL=bundle.a0384da6bcd1f9314cfc85b321f38ad7.css.map*/
