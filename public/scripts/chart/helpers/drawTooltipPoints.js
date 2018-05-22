@@ -1,13 +1,14 @@
 "use strict";
 
 import * as d3 from "d3";
-import { mouseMove, mouseEnter } from "./mouseEvents";
+import { mouseMove, mouseEnter, mouseClick } from "./mouseEvents";
 import zoomFunction from "./zoom";
 
 export default function (params) {
 	const tooltipData = params.data.reduce((acc, cur) => Object.assign(acc, { [cur.id]: cur.values, dates: cur.values.map(item => item.date) }), {});
 	// APPEND ZOOM AREA
 	const svg = d3.select("#chart");
+	let idx = null;
 	if (params.initialize) {
 		svg.append("rect")
 			.classed("zoom", true)
@@ -15,6 +16,7 @@ export default function (params) {
 			.attr("width", params.width)
 			.attr("height", params.height)
 			.call(d3.zoom().on("zoom", zoomFunction.bind(this, params.xScale, params.axis.x)))
+			.on("click", mouseClick)
 			.on("mouseover", mouseEnter)
 			.on("mousemove", mouseMove.bind(this, tooltipData, params.xScale, params.yScale));
 		// TOOLTIP LINE
@@ -57,10 +59,12 @@ export default function (params) {
 		if (params.addStock) {
 			svg.select(".points")
 				.append("circle")
-				.attr("class", () => `cross-points ${params.addStock}`);
+				.attr("class", () => `cross-points ${params.addStock}`)
+				.attr("visibility", "visible");
 			svg.select(".shadows")
 				.append("circle")
-				.attr("class", () => `point-shadows ${params.addStock}`);
+				.attr("class", () => `point-shadows ${params.addStock}`)
+				.attr("visibility", "visible");
 		}
 		// TOOLTIP POINTS SHADOW
 		svg.selectAll(".point-shadows")
@@ -70,6 +74,7 @@ export default function (params) {
 		svg.selectAll(".point-shadows")
 			.attr("r", "8")
 			.attr("visibility", function a() {
+				idx = idx || d3.select(this).attr("title");
 				return d3.select(this).attr("visibility");
 			})
 			.style("fill", d => params.zScale(d.id))
@@ -86,7 +91,12 @@ export default function (params) {
 			})
 			.style("fill", d => params.zScale(d.id))
 			.attr("transform", `translate(${params.margin.left}, ${params.margin.top})`);
+
+		if (idx) {
+			d3.selectAll("circle").call(mouseClick, idx, params.data, params.xScale, params.yScale);
+		}
 	}
+
 /*	// EXIT
 	this.selectAll(".cross-points")
 		.data(params.data)
