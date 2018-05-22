@@ -1,7 +1,7 @@
 "use strict";
 
 import * as d3 from "d3";
-import { mouseMove, mouseEnter, mouseClick } from "./mouseEvents";
+import { mouseMove, mouseEnter, tooltipPointsUpdate, tooltipUpdate } from "./mouseEvents";
 import zoomFunction from "./zoom";
 
 export default function (params) {
@@ -16,9 +16,8 @@ export default function (params) {
 			.attr("width", params.width)
 			.attr("height", params.height)
 			.call(d3.zoom().on("zoom", zoomFunction.bind(this, params.xScale, params.axis.x)))
-			.on("click", mouseClick)
 			.on("mouseover", mouseEnter)
-			.on("mousemove", mouseMove.bind(this, tooltipData, params.xScale, params.yScale));
+			.on("mousemove", mouseMove.bind(this, tooltipData, params));
 		// TOOLTIP LINE
 		svg.append("path")
 			.attr("visibility", "visible")
@@ -47,7 +46,7 @@ export default function (params) {
 			.append("circle")
 			.attr("class", d => `cross-points ${d.id}`);
 		svg.selectAll(".cross-points")
-			.attr("r", "4")
+			.attr("r", "2.5")
 			.attr("visibility", "hidden")
 			.style("fill", d => params.zScale(d.id))
 			.attr("transform", `translate(${params.margin.left}, ${params.margin.top})`);
@@ -55,7 +54,7 @@ export default function (params) {
 		svg.select(".zoom")
 			.call(d3.zoom().on("zoom", zoomFunction.bind(this, params.xScale, params.axis.x)))
 			.on("mouseover", mouseEnter)
-			.on("mousemove", mouseMove.bind(this, tooltipData, params.xScale, params.yScale));
+			.on("mousemove", mouseMove.bind(this, tooltipData, params));
 		if (params.addStock) {
 			svg.select(".points")
 				.append("circle")
@@ -85,7 +84,7 @@ export default function (params) {
 			.enter()
 			.attr("class", d => `cross-points ${d.id}`);
 		svg.selectAll(".cross-points")
-			.attr("r", "4")
+			.attr("r", "2.5")
 			.attr("visibility", function a() {
 				return d3.select(this).attr("visibility");
 			})
@@ -93,19 +92,8 @@ export default function (params) {
 			.attr("transform", `translate(${params.margin.left}, ${params.margin.top})`);
 
 		if (idx) {
-			d3.selectAll("circle").call(mouseClick, idx, params.data, params.xScale, params.yScale);
+			d3.selectAll("circle").call(tooltipPointsUpdate, idx, params);
+			d3.select(".tooltip").call(tooltipUpdate, idx, tooltipData, params);
 		}
 	}
-
-/*	// EXIT
-	this.selectAll(".cross-points")
-		.data(params.data)
-		.exit()
-		.remove();
-
-	this.selectAll(".point-shadows")
-		.data(params.data)
-		.exit()
-		.remove();
-		*/
 }
