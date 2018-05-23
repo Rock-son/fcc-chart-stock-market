@@ -20,7 +20,7 @@ export default function (params) {
 
 	stock.append("text")
 		.datum(d => ({ id: d.id, value: d.values[0/* d.values.length - 1 */] }))
-		.attr("transform", d => `translate(${params.xScale(d.value.date) - 60},${params.yScale(d.value.price)})`)
+		.attr("transform", d => `translate(${params.xScale(d.value.date) - 50},${params.yScale(d.value.price)})`)
 		.attr("class", d => `text-caption`)
 		.attr("fill", d => params.zScale(d.id))
 		.attr("x", 3)

@@ -17,7 +17,6 @@
     "dev": "webpack-dev-server --config webpack.config.dev.js"
   },
   "eslintIgnore": [
-    "server.js",
     "webpack.config.js",
     "controller.js"
   ],
@@ -48,6 +47,8 @@
     "prop-types": "^15.6.1",
     "react": "^16.2.0",
     "react-dom": "^16.3.1",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {

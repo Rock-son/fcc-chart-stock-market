@@ -1,10 +1,11 @@
 "use strict";
 
 import React from "react";
+import io from "socket.io-client";
 import xss from "xss-filters";
 
-import axios from "../../scripts/api";
-import chart from "../../scripts/chart/index";
+import { getAllStocks, removeStock, addStock } from "../../scripts/ChartMethods";
+import { CONNECT, STOCK_ADD, STOCK_REMOVE } from "../../scripts/events";
 
 // import chart from "./_chart";
 
@@ -19,11 +20,13 @@ export default class Content extends React.Component {
 		this.state = {
 			input: "", stocks: [], stockDscrptn: {}, componentErr: "", stockErr: ""
 		};
+		this.socket = null;
 		this.stocks = []; // needed for immediate stock updating, state updates only after Promise return!
 		this.input = React.createRef();
 		this.searchBtn = React.createRef();
 
 		this.addStock = this.addStock.bind(this);
+		this.initSocket = this.initSocket.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 		this.removeStock = this.removeStock.bind(this);
 		this.handleEnterPress = this.handleEnterPress.bind(this);
@@ -32,28 +35,25 @@ export default class Content extends React.Component {
 
 	componentDidMount() {
 		this.input.current.click();
-
-		axios.getAllStocks()
-			.then((response) => {
-				if (response.data) {
-					chart(response.data.map(resp => resp.chart));
-					this.stocks = response.data.map(item => item.quote.code);
-
-					this.setState({
-						stocks: response.data.map(item => item.quote.code),
-						stockErr: "",
-						componentErr: "",
-						stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.code]: cur.quote }), {})
-					});
-				}
-			})
-			.catch(err => this.setState({ stockErr: err.message }));
+		this.initSocket();
+		getAllStocks.call(this);
 	}
 
-	componentDidCatch(error, info) {
+	componentDidCatch(error/* , info */) {
 		// Display fallback UI
-		console.log(error, info);
 		this.setState({ componentErr: error.message });
+	}
+
+	initSocket() {
+		this.socket = io();
+		this.socket.on(CONNECT, console.log(`User connected!`));
+		this.socket.on(STOCK_ADD, (stock) => {
+			addStock.call(this, stock, "no emit");
+
+		});
+		this.socket.on(STOCK_REMOVE, (stock) => {
+			removeStock.call(this, stock, "no emit");
+		});
 	}
 
 	handleEnterPress(e) {
@@ -68,28 +68,7 @@ export default class Content extends React.Component {
 			const stock = e.currentTarget.getAttribute("data") || "";
 			this.stocks.splice(this.stocks.indexOf(stock), 1);
 
-			axios.removeStock(stock)
-				.then(
-					(response) => {
-						if (response.data) {
-							chart(response.data.map(resp => resp.chart), false, stock);
-
-							const stockIdx = this.state.stocks.indexOf(stock);
-							if (stockIdx > -1) {
-								this.input.current.click();
-								this.setState(prevState => (
-									{
-										stocks: prevState.stocks.slice(0, stockIdx).concat(prevState.stocks.slice(stockIdx + 1)),
-										stockErr: "",
-										componentErr: "",
-										stockDscrptn: { ...prevState.stockDscrptn, [stock]: {} }
-									}));
-								this.input.current.click();
-							}
-						}
-					},
-					reason => this.setState({ stockErr: reason })
-				).catch((err) => { console.log(err); this.setState({ stockErr: err.message }); });
+			removeStock.call(this, stock);
 		}
 	}
 	addStock(e) {
@@ -106,28 +85,7 @@ export default class Content extends React.Component {
 			return;
 		}
 		this.stocks.push(stock);
-
-		axios.addStock(stock)
-			.then(
-				(response) => {
-					// IF STOCK DOESN'T EXIST, SETSTATE - else do nothing
-					if (typeof response.data === "object" && response.data !== "Unkown symbol") {
-						chart(response.data.map(resp => resp.chart), false, null, stock);
-						this.input.current.click();
-						this.setState(prevState => (
-							{
-								stocks: [...prevState.stocks, stock],
-								stockErr: "",
-								componentErr: "",
-								stockDscrptn: response.data.reduce((acc, cur) => Object.assign(acc, { [cur.quote.code]: cur.quote }), {})
-							}
-						));
-					} else {
-						this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock not traded on NasDaq!` });
-					}
-				},
-				() => this.setState({ stockErr: `${xss.inHTMLData(stock.toUpperCase())} stock not traded on NasDaq!` })
-			).catch(err => this.setState({ stockErr: err }));
+		addStock.call(this, stock);
 	}
 
 	selectAllOnEnter(e) {
