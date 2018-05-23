@@ -50,8 +50,9 @@ export default class Content extends React.Component {
 			.catch(err => this.setState({ stockErr: err.message }));
 	}
 
-	componentDidCatch(error/* , info */) {
+	componentDidCatch(error, info) {
 		// Display fallback UI
+		console.log(error, info);
 		this.setState({ componentErr: error.message });
 	}
 
@@ -88,7 +89,7 @@ export default class Content extends React.Component {
 						}
 					},
 					reason => this.setState({ stockErr: reason })
-				).catch(err => this.setState({ stockErr: err.message }));
+				).catch((err) => { console.log(err); this.setState({ stockErr: err.message }); });
 		}
 	}
 	addStock(e) {
@@ -168,7 +169,7 @@ export default class Content extends React.Component {
 								<div className="cards__container__head" >
 									<div className="cards__container__head__header" data={change < 0 ? "negative" : "positive"} >{stock}</div>
 									<div className="cards__container__head__trend" title={latestTime} data={+change < 0 ? "negative" : "positive"} >{(changePercent || 0).toFixed(2)}<span className="span"> %</span></div>
-									<div className="cards__container__head__value" title={((+close - +change)||0).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
+									<div className="cards__container__head__value" title={((+close - +change) || 0).toFixed(2)} data={+change < 0 ? "negative" : "positive"} >{`$${close}`}</div>
 								</div>
 								<div className="cards__container__description"><span>{companyName}</span>{` (${stock}) Prices and Trading Volume`}</div>
 							</div>
