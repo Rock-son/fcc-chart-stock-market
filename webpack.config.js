@@ -6,9 +6,6 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-
-const isDevEnv = process.env.NODE_ENV === "development" || false;
-
 const { Aliases } = require("./webpack.config.aliases");
 
 // HTML_WEBPACK_PLUGIN
@@ -38,7 +35,6 @@ const config = {
 		alias: Aliases,
 		extensions: [".js", ".jsx", ".scss"]
 	},
-	devtool: "#source-map",
 	module: {
 		rules: [
 			{
@@ -48,21 +44,15 @@ const config = {
 			{
 				test: /\.scss$/,
 				use: ExtractTextPlugin.extract({
-
 					fallback: "style-loader",
 					use: [{
 						loader: "css-loader",
-						options: { importLoaders: 1, sourceMap: isDevEnv }},
-					{
-						loader: "resolve-url-loader",
-						options: { sourceMap: isDevEnv }},
-					{
-						loader: "postcss-loader",
-						options: { sourceMap: isDevEnv }},
-					{
-						loader: "sass-loader",
-						options: { sourceMap: isDevEnv }
-					}]
+						options: { importLoaders: 1 }
+					},
+					"resolve-url-loader",
+					"postcss-loader",
+					"sass-loader"
+					]
 				})
 			}
 		]
