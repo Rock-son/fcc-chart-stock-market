@@ -405,8 +405,11 @@ line {
 #chart {
   position: absolute;
   background-color: transparent;
-  margin-left: 12.5%;
+  margin: auto;
   border-radius: 5px 5px 0 0;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .chart-title {
@@ -457,6 +460,9 @@ line {
   background-color: #212121;
   font-size: .7rem;
   font-variant: small-caps;
+  pointer-events: none;
+  -webkit-transition: top, left 0.1s;
+  transition: top, left 0.1s;
 }
 
 .tooltip__header {
@@ -548,12 +554,20 @@ line {
   z-index: -1;
 }
 
+@media (max-width: 1250px) {
+  .chart-container {
+    width: 97%;
+  }
+}
+
 .cards {
   position: absolute;
+  right: 0;
+  left: 0;
   bottom: 2%;
   width: 80%;
   height: 40vh;
-  margin-left: 10%;
+  margin: auto;
   display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
@@ -570,6 +584,12 @@ line {
   overflow: auto;
   background-color: transparent;
   border-radius: 0 0 5px 5px;
+}
+
+@media (max-width: 1250px) {
+  .cards {
+    width: 97%;
+  }
 }
 
 .cards__hero {
@@ -595,13 +615,13 @@ line {
   background-color: #333;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 5px;
-  -webkit-box-shadow: 0px 0px 25px #fb18ff;
-  box-shadow: 0px 0px 25px #fb18ff;
+  -webkit-box-shadow: 0px 0px 10px #fb18ff;
+  box-shadow: 0px 0px 10px #fb18ff;
 }
 
 .cards__container[data="positive"] {
-  -webkit-box-shadow: 0px 0px 25px #09f924;
-  box-shadow: 0px 0px 25px #09f924;
+  -webkit-box-shadow: 0px 0px 10px #09f924;
+  box-shadow: 0px 0px 10px #09f924;
 }
 
 .cards__container:first-child {
@@ -753,7 +773,7 @@ line {
 }
 
 .footer__codedby {
-  color: #bbb;
+  color: #000;
 }
 
 .footer__codedby__link {
@@ -766,5 +786,5 @@ line {
 }
 
 .footer__codedby__link:visited {
-  color: #bbb;
+  color: #000;
 }
