@@ -80,6 +80,7 @@ export default function (pollData, initialize = true, removeStock = null, addSto
 						.call(zoom);
 		d3.select('body')
 					.append('div')
+					.style("display", "none")
 					.classed("tooltip", true);
 		chart.append('text')
 			.classed("chart-title", true)
