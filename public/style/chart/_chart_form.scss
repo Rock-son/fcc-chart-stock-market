@@ -14,14 +14,21 @@
     bottom: 1%;
 	box-shadow: 0px 0px 55px #000000;
 	border-radius: 15px;
-    z-index: -1;
+	z-index: -1;
+	@media (max-width: 1250px) {
+		& {
+			width: 97%;
+		}
+	}
 }
 .cards {
 	position: absolute;
+	right: 0;
+    left: 0;
     bottom: 2%;
     width: 80%;
     height: 40vh;
-	margin-left: 10%;
+	margin: auto;
 	display: inline-flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -30,6 +37,11 @@
 	overflow: auto;
 	background-color: transparent;
 	border-radius: 0 0 5px 5px;
+	@media (max-width: 1250px) {
+		& {
+			width: 97%;
+		}
+	}
 	&__hero {
 		top: 0;
 		right: 0;
@@ -52,9 +64,9 @@
 		background-color: #333;
 		background-color: rgba(0,0,0,0.7);
 		border-radius: 5px;
-		box-shadow: 0px 0px 25px #fb18ff;
+		box-shadow: 0px 0px 10px #fb18ff;
 		&[data="positive"] {
-			box-shadow: 0px 0px 25px #09f924;
+			box-shadow: 0px 0px 10px #09f924;
 		}
 		&:first-child {
 			background-color: #3c3c3c;

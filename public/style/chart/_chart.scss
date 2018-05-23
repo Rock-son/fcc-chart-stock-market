@@ -6,8 +6,12 @@ line{
 #chart {
 	position: absolute;
     background-color: transparent;
-	margin-left: 12.5%;
-	border-radius: 5px 5px 0 0;
+    margin: auto;
+    border-radius: 5px 5px 0 0;
+    top: 0;
+    left: 0;
+    right: 0;
+
 }
 .chart-title {
 	font-size:	2rem;
@@ -50,6 +54,8 @@ line{
     background-color: #212121;
 	font-size: .7rem;
 	font-variant: small-caps;
+	pointer-events: none;
+	transition: top, left 0.1s;
 	&__header {
 		padding-bottom: .2rem;
 		color: #fff;

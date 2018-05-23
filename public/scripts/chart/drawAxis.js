@@ -32,11 +32,11 @@ export default function drawAxis(params) {
 		this.select(".y.axis")
 			.append("text")
 			.classed("y-axis-caption", true)
-			.text("Votes")
-			.attr("x", 0)
-			.attr("y", -50)
-			.attr("transform", "rotate(-90)")
-			.attr("fill", "#333")
+			.text("Price ($)")
+			.attr("x", 60)
+			.attr("y", -10)
+			.attr("fill", "#eee")
+			.style("font-size", "1rem")
 			.style("text-anchor", "end");
 
 		// draw description texts
@@ -45,7 +45,7 @@ export default function drawAxis(params) {
 			.text(params.description.slice(0, params.description.indexOf("http")))
 			.attr("dx", params.width / 2)
 			.attr("dy", 40)
-			.style("fill", "rgb(0, 253, 3)")
+			.style("fill", "#eee")
 			.style("font-size", "1rem")
 			.style("text-anchor", "middle")
 			.style("transform", "translateX(-5%)");
@@ -58,7 +58,7 @@ export default function drawAxis(params) {
 				.text(params.description.slice(params.description.indexOf("http")))
 				.attr("dx", (params.width / 2) + 125)
 				.attr("dy", 40)
-				.style("fill", "rgb(0, 253, 3)")
+				.style("fill", "#eee")
 				.style("font-size", "1rem")
 				.style("text-anchor", "middle");
 	} else if (params.initialize === false) {
