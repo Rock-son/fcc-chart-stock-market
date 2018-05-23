@@ -4,7 +4,7 @@ import React from "react";
 import io from "socket.io-client";
 import xss from "xss-filters";
 
-import { getAllStocks, removeStock, addStock } from "../../scripts/ChartMethods";
+import { getAllStocks, removeStock, addStock } from "../../scripts/reactDataGetters";
 import { CONNECT, STOCK_ADD, STOCK_REMOVE } from "../../scripts/events";
 
 // import chart from "./_chart";
