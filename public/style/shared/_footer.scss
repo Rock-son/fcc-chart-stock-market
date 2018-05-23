@@ -11,7 +11,7 @@
         color: red;
 	}
 	&__codedby {
-		color: #bbb;
+		color: #000;
 	}
     &__codedby__link {
         text-decoration: none;
@@ -20,7 +20,7 @@
             text-decoration: underline;
         }
         &:visited {
-            color: #bbb;
+			color: #000;
         }
     }
 }
