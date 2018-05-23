@@ -59,11 +59,11 @@ export default function (params) {
 			svg.select(".points")
 				.append("circle")
 				.attr("class", () => `cross-points ${params.addStock}`)
-				.attr("visibility", "visible");
+				.attr("visibility", () => d3.select(".point-shadows").style("visibility"));
 			svg.select(".shadows")
 				.append("circle")
 				.attr("class", () => `point-shadows ${params.addStock}`)
-				.attr("visibility", "visible");
+				.attr("visibility", () => d3.select(".point-shadows").style("visibility"));
 		}
 		// TOOLTIP POINTS SHADOW
 		svg.selectAll(".point-shadows")
