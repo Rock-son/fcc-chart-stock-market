@@ -11,7 +11,7 @@ export default function () {
 				<span>&nbsp; by </span>
 				<a className="footer__codedby__link" href="https://codepen.io/Roky/full/YqGqWg" target="_blank" rel="noopener noreferrer"> Roky </a>
 				<span> | </span>
-				<a className="footer__codedby__link" href="https://github.com/Rock-son/Dynamic-web-projects" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+				<a className="footer__codedby__link" href="https://fcc-chart-the-stock-market.herokuapp.com" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
 			</footer>
 		</section>
 	);
