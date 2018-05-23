@@ -43,11 +43,11 @@ export default function (params) {
 				.transition()
 				.duration(1500)
 				.attr("cx", function a(d) {
-					const idx = d3.select(this).attr('title');
+					const idx = d3.select(this).attr('title') || 0;
 					return params.xScale(d.values[idx].date);
 				})
 				.attr("cy", function a(d) {
-					const idx = d3.select(this).attr('title');
+					const idx = d3.select(this).attr('title') || 0;
 					return params.yScale(d.values[idx].price);
 				});
 
