@@ -34,6 +34,7 @@ export function removeStock(stock, noEmit = null) {
 
 					const stockIdx = this.state.stocks.indexOf(stock);
 					if (stockIdx > -1) {
+						this.stocks.splice(this.stocks.indexOf(stock), 1);
 						this.input.current.click();
 						this.setState(prevState => (
 							{
