@@ -65,8 +65,15 @@ const config = {
 			// disable: isDevEnv
 		}),
 		new FriendlyErrorsWebpackPlugin(),
+		// extract vendor and webpack's module manifest
 		new webpack.optimize.CommonsChunkPlugin({
 			names: ["vendor", "manifest"]
+		}),
+		// extract common modules from all the chunks (requires no 'name' property)
+		new webpack.optimize.CommonsChunkPlugin({
+			async: true,
+			children: true,
+			minChunks: 4
 		}),
 		new HtmlWebpackPlugin({
 			template: TEMPLATE_IN,

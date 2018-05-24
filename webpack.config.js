@@ -62,8 +62,16 @@ const config = {
 			filename: "[name].[contenthash].css"
 			//disable: isDevEnv
 		}),
+		// extract vendor and webpack's module manifest
 		new webpack.optimize.CommonsChunkPlugin({
-			names: ["vendor", "manifest"]
+			names: ["vendor", "manifest"],
+			minChunks: Infinity
+		}),
+		// extract common modules from all the chunks (requires no 'name' property)
+		new webpack.optimize.CommonsChunkPlugin({
+			async: true,
+			children: true,
+			minChunks: 4
 		}),
 		new HtmlWebpackPlugin({
 			template: TEMPLATE_IN,
