@@ -35,11 +35,11 @@ module.exports.default = function(app, io) {
 			.then(db => {
 				if (db) {
 					const now = Date.now();
-					const _7hrsMilisecs = 7 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
-					const dataOlderThan7hrs = (now - db.updatedUTC.getTime()) > _7hrsMilisecs;
+					const _4hrsMilisecs = 4 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _4hrsMilisecs;
 
 					// MERGE DB AND API DATA AND RETURN
-					if (!dataOlderThan7hrs) {
+					if (!dataOlderThan4hrs) {
 						return helper.mergeAndReturnData(res, stock); // TESTING OK!!!
 					}
 				}
@@ -56,11 +56,11 @@ module.exports.default = function(app, io) {
 			.then(db => {
 				if (db) {
 					const now = Date.now();
-					const _7hrsMilisecs = 7 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
-					const dataOlderThan7hrs = (now - db.updatedUTC.getTime()) > _7hrsMilisecs;
+					const _4hrsMilisecs = 4 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _4hrsMilisecs;
 
 					// REFRESH API DATA, SAVE AND RETURN
-					if (dataOlderThan7hrs) {
+					if (dataOlderThan4hrs) {
 						return helper.refreshAndReturnData(res); // TESTING OK!!!
 					}
 					return helper.mergeAndReturnData(res); // TESTING OK!!!
