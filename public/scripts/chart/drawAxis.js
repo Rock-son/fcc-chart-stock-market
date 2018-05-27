@@ -56,7 +56,7 @@ export default function drawAxis(params) {
 				.attr("xlink:show", "new")
 				.append('text')
 				.text(params.description.slice(params.description.indexOf("http")))
-				.attr("dx", (params.width / 2) + 125)
+				.attr("dx", (params.width / 2) + 150)
 				.attr("dy", 40)
 				.style("fill", "#eee")
 				.style("font-size", "1rem")

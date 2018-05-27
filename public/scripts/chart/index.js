@@ -38,7 +38,7 @@ export default function (pollData, initialize = true, removeStock = null, addSto
 	/* eslint-disable indent */
 		const parseTime = d3.timeFormat("%d.%b");
 		const data = pollData.map(stock => ({ id: stock.id, values: stock.values.map(value => ({ date: new Date(value.date), price: +value.price })) }));
-		const description = "Powered by: https://iextrading.com";
+		const description = "Powered by D3 and https://iextrading.com";
 		let chart = null;
 		const x = d3.scaleTime()
 			.domain([d3.min(data, c => d3.min(c.values, d => d.date)),
