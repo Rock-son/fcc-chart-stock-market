@@ -42,6 +42,11 @@
 			width: 97%;
 		}
 	}
+	@media (max-height: 400px) {
+		& {
+			height: 25vh;
+		}
+	}
 	&__hero {
 		top: 0;
 		right: 0;
@@ -65,6 +70,11 @@
 		background-color: rgba(0,0,0,0.7);
 		border-radius: 5px;
 		box-shadow: 0px 0px 10px #fb18ff;
+		@media (max-height: 400px) {
+			& {
+				min-width: 150px;
+			}
+		}
 		&[data="positive"] {
 			box-shadow: 0px 0px 10px #09f924;
 		}
@@ -88,6 +98,12 @@
 			line-height: 1.3rem;
 			font-size: 1.3rem;
 			text-shadow: -0.2px -0.5px 5px #676464;
+			@media (max-height: 400px) {
+				& {
+					line-height: .9rem;
+					font-size: 1rem;
+				}
+			}
 			cursor: pointer;
 			&:hover {
 				background-color: #e94c4c;
@@ -99,8 +115,14 @@
 		&__head {
 			width: 85%;
 			margin: 7% 0 5% 5%;
+			font-size: 1rem;
+			@media (max-height: 400px) {
+				& {
+					font-size: .7rem;
+				}
+			}
 			&:first-child &__header {
-				font-size: 1rem;
+				font-size: inherit;
 				color: #09f924;
 			}
 			&__header {
@@ -111,6 +133,12 @@
 				padding: .3rem .8rem .3rem 0;
 				margin: 0;
 				text-shadow: -0.2px -0.5px 5px #000;
+				@media (max-height: 400px) {
+					& {
+						padding: .6rem .3rem .6rem 0;
+						font-size: inherit;
+					}
+				}
 				&[data="negative"] {
 					color: #fb7f7f;
 				}
@@ -120,13 +148,18 @@
 			}
 			&__trend {
 				float: right;
-				font-size: 1rem;
+				font-size: inherit;
 				font-weight: 700;
 				margin-top: .3rem;
 			   	padding: .3rem .8rem;
 				border-radius: 5px;
 				cursor: help;
 				text-shadow: 0.2px 0.5px 2px #040404;
+				@media (max-height: 400px) {
+					& {
+						padding: .3rem .3rem;
+					}
+				}
 				& .span {
 					color: #949494;
 				}
@@ -141,15 +174,21 @@
 			}
 			&__value {
 				float: right;
-				font-size: 1rem;
+				font-size: inherit;
 				font-weight: 700;
 				padding: .6rem .8rem;
 				color: #bbb;
 				cursor: help;
+				@media (max-height: 400px) {
+					& {
+						padding: .6rem .5rem .6rem 0;
+						font-size: .7rem;
+					}
+				}
 			}
 		}
 		&__inputs {
-			width: 17.8rem;
+			width: 95%;
 			padding: 0 0 10% 5%;
 			&__text {
 				width: 70%;
@@ -166,6 +205,12 @@
 			width: 90%;
 			padding: 0 0 10% 5%;
 			color: #aaa;
+			font-size: inherit;
+			@media (max-height: 400px) {
+				& {
+					font-size: .7rem;
+				}
+			}
 			& span {
 				font-weight: 700;
 				color:#fff;
