@@ -62,7 +62,7 @@ const config = {
 			filename: "[name].[contenthash].css"
 			//disable: isDevEnv
 		}),
-		// extract vendor and webpack's module manifest
+		// extract vendor and webpack's module manifest and inline it in the dist HTML
 		new webpack.optimize.CommonsChunkPlugin({
 			names: ["vendor", "manifest"],
 			minChunks: Infinity
