@@ -11,12 +11,16 @@ line{
     top: 0;
     left: 0;
     right: 0;
-
 }
 .chart-title {
 	font-size:	2rem;
 	fill: #ddd;
 	font-variant: small-caps;
+	@media (max-height: 400px) {
+		& {
+			font-size:	1rem;
+		}
+	}
 }
 .tick {
 	stroke: #eaeaea;

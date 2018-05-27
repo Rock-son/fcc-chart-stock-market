@@ -8,11 +8,12 @@ import { mouseLeave } from "./helpers/mouseEvents";
 
 export default function (pollData, initialize = true, removeStock = null, addStock = null) {
 	// container object's width and height
-	const winSize = +window.innerWidth;
-	const w = winSize > 1250 ? winSize * 0.75 : winSize * 0.95; // same as in responsive CSS
-	const h = +window.innerHeight * 0.6;
+	const innerHeight = +window.innerHeight;
+	const innerWidth = +window.innerWidth;
+	const w = innerWidth > 1250 ? innerWidth * 0.75 : innerWidth * 0.95; // same as in responsive CSS
+	const h = innerHeight < 400 ? innerHeight * 0.8 : innerHeight * 0.6;
 	const margin = {
-		top: 60,
+		top: innerHeight < 400 ? 30 : 60,
 		bottom: 60,
 		left: 60,
 		right: 60,
