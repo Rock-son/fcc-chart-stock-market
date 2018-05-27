@@ -60,6 +60,7 @@ export default function (pollData, initialize = true, removeStock = null, addSto
 								.tickFormat("");
 		const xAxis = d3.axisBottom()
 							.scale(x)
+							.ticks(d3.timeDay.every(16))
 							.tickFormat(parseTime);
 		const yAxis = d3.axisRight()
 							.scale(y)
