@@ -418,6 +418,12 @@ line {
   font-variant: small-caps;
 }
 
+@media (max-height: 400px) {
+  .chart-title {
+    font-size: 1rem;
+  }
+}
+
 .tick {
   stroke: #eaeaea;
   font-size: .7rem;
@@ -592,6 +598,12 @@ line {
   }
 }
 
+@media (max-height: 400px) {
+  .cards {
+    height: 25vh;
+  }
+}
+
 .cards__hero {
   top: 0;
   right: 0;
@@ -617,6 +629,12 @@ line {
   border-radius: 5px;
   -webkit-box-shadow: 0px 0px 10px #fb18ff;
   box-shadow: 0px 0px 10px #fb18ff;
+}
+
+@media (max-height: 400px) {
+  .cards__container {
+    min-width: 150px;
+  }
 }
 
 .cards__container[data="positive"] {
@@ -650,6 +668,13 @@ line {
   cursor: pointer;
 }
 
+@media (max-height: 400px) {
+  .cards__container__close {
+    line-height: .9rem;
+    font-size: 1rem;
+  }
+}
+
 .cards__container__close:hover {
   background-color: #e94c4c;
 }
@@ -661,10 +686,17 @@ line {
 .cards__container__head {
   width: 85%;
   margin: 7% 0 5% 5%;
+  font-size: 1rem;
+}
+
+@media (max-height: 400px) {
+  .cards__container__head {
+    font-size: .7rem;
+  }
 }
 
 .cards__container__head:first-child .cards__container__head__header {
-  font-size: 1rem;
+  font-size: inherit;
   color: #09f924;
 }
 
@@ -678,6 +710,13 @@ line {
   text-shadow: -0.2px -0.5px 5px #000;
 }
 
+@media (max-height: 400px) {
+  .cards__container__head__header {
+    padding: .6rem .3rem .6rem 0;
+    font-size: inherit;
+  }
+}
+
 .cards__container__head__header[data="negative"] {
   color: #fb7f7f;
 }
@@ -688,13 +727,19 @@ line {
 
 .cards__container__head__trend {
   float: right;
-  font-size: 1rem;
+  font-size: inherit;
   font-weight: 700;
   margin-top: .3rem;
   padding: .3rem .8rem;
   border-radius: 5px;
   cursor: help;
   text-shadow: 0.2px 0.5px 2px #040404;
+}
+
+@media (max-height: 400px) {
+  .cards__container__head__trend {
+    padding: .3rem .3rem;
+  }
 }
 
 .cards__container__head__trend .span {
@@ -713,15 +758,22 @@ line {
 
 .cards__container__head__value {
   float: right;
-  font-size: 1rem;
+  font-size: inherit;
   font-weight: 700;
   padding: .6rem .8rem;
   color: #bbb;
   cursor: help;
 }
 
+@media (max-height: 400px) {
+  .cards__container__head__value {
+    padding: .6rem .5rem .6rem 0;
+    font-size: .7rem;
+  }
+}
+
 .cards__container__inputs {
-  width: 17.8rem;
+  width: 95%;
   padding: 0 0 10% 5%;
 }
 
@@ -741,6 +793,13 @@ line {
   width: 90%;
   padding: 0 0 10% 5%;
   color: #aaa;
+  font-size: inherit;
+}
+
+@media (max-height: 400px) {
+  .cards__container__description {
+    font-size: .7rem;
+  }
 }
 
 .cards__container__description span {
