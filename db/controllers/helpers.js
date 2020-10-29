@@ -27,7 +27,6 @@ exports.refreshAndReturnData = function b(res, symbol) {
 	db.getAllStockCodes()
 		.then((response) => {
 			if (!response.length && !code) { return res.send(""); }
-
 			dbStocks = response.map(item => item.code);
 			// UPDATE ALL DATA AND SAVE NEW STOCK - IF STOCK NOT ALREADY IN DB
 			if (code && dbStocks.indexOf(code) === -1) {
@@ -58,7 +57,6 @@ exports.refreshAndReturnData = function b(res, symbol) {
 			Promise.all(promises)
 				.then((apiResults) => {
 					const data = apiResults.map(item => item.data);
-
 					updatePromises = data.map(item => db.updateStock(item.quote.symbol, item));
 					return Promise.all(updatePromises)
 						.then(updateResult => res.send(updateResult.map(item => ({ quote: item.quote, chart: item.chart }))))

@@ -58,14 +58,14 @@ module.exports.default = function(app, io) {
 					const now = Date.now();
 					const _4hrsMilisecs = 4 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
 					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _4hrsMilisecs;
-
+					
 					// REFRESH API DATA, SAVE AND RETURN
 					if (dataOlderThan4hrs) {
 						return helper.refreshAndReturnData(res); // TESTING OK!!!
 					}
 					return helper.mergeAndReturnData(res); // TESTING OK!!!
 				}
-				console.log("wtf");
+				console.log("wtf", db);
 				return res.send("");
 			})
 			.catch(error => res.status(400).send({error: error.message}))

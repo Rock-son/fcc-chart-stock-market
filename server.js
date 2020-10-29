@@ -57,7 +57,11 @@ app.use(limiter);
 
 // DB
 mongoose.Promise = global.Promise;
-mongoose.connect(dbUrl, { useMongoClient: true, autoIndex: false });
+try {	
+	mongoose.connect(dbUrl, { useMongoClient: true, autoIndex: false });
+} catch (error) {
+	console.log(error);
+}
 
 // ROUTES
 serverRouter(app, io);
