@@ -32,7 +32,7 @@ const config = {
 		alias: Aliases,
 		extensions: [".js", ".jsx", ".scss"]
 	},
-	devtool: "#source-map",
+	devtool: "inline",
 	devServer: {
 		contentBase: [path.join(__dirname, "dist"), path.join(__dirname, "public")]
 	},

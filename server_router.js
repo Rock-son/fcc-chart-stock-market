@@ -27,7 +27,6 @@ module.exports.default = function(app, io) {
 
 	// SEARCH STOCKS AND SAVE ITS DATA
 	app.post("/api/addStock", async (req, res, next) => {
-
 		const stock = mongoSanitize((req.body.stock || "").trim());
 		if (!stock) { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
@@ -35,8 +34,8 @@ module.exports.default = function(app, io) {
 			.then(db => {
 				if (db) {
 					const now = Date.now();
-					const _4hrsMilisecs = 4 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
-					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _4hrsMilisecs;
+					const _24hrsMilisecs = 24 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _24hrsMilisecs;
 
 					// MERGE DB AND API DATA AND RETURN
 					if (!dataOlderThan4hrs) {
@@ -46,7 +45,7 @@ module.exports.default = function(app, io) {
 				// NO DATA IN DB || DATA OLDER THAN 17:00 LAST DAY - UPDATE, SAVE AND RETURN
 				return helper.refreshAndReturnData(res, stock);
 			})
-			.catch(error => res.status(400).send({error: error.message}))
+			.catch(error => res.status(400).send({error: error.message}));
 	});
 
 
@@ -56,8 +55,8 @@ module.exports.default = function(app, io) {
 			.then(db => {
 				if (db) {
 					const now = Date.now();
-					const _4hrsMilisecs = 4 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
-					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _4hrsMilisecs;
+					const _24hrsMilisecs = 24 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _24hrsMilisecs;
 					
 					// REFRESH API DATA, SAVE AND RETURN
 					if (dataOlderThan4hrs) {
@@ -65,7 +64,6 @@ module.exports.default = function(app, io) {
 					}
 					return helper.mergeAndReturnData(res); // TESTING OK!!!
 				}
-				console.log("wtf", db);
 				return res.send("");
 			})
 			.catch(error => res.status(400).send({error: error.message}))

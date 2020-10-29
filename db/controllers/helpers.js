@@ -89,10 +89,15 @@ exports.mergeAndReturnData = function c(res, symbol) {
 							.then((respDB) => {
 								return db.addStock(stock, respApi.data) //	ELSE SAVE TO DB
 									.then((_resp_) => {
-										const newStockData = [{ quote: _resp_.quote, chart: _resp_.chart }];
-										return res.send(respDB.concat(newStockData)); 	//	RETURN COMBINED
+										if (_resp_) {
+											const newStockData = [{ quote: _resp_.quote, chart: _resp_.chart }];
+											return res.send(respDB.concat(newStockData)); 	//	RETURN COMBINED
+										}
+										return res.status(400).send({ error: "Network problems"})
 									})
-									.catch(err => res.status(400).send({ error: err.message }));
+									.catch(err => {
+										return res.status(400).send({ error: err.message })
+									});
 							})
 							.catch(err => res.status(400).send({ error: err.message }));
 					})
