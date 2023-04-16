@@ -27,7 +27,7 @@ module.exports.default = function (app, io) {
 	io.on("connection", connectionHandler);
 
 	// SEARCH STOCKS AND SAVE ITS DATA
-	app.post("/api/addStock", (req, res) => {
+	app.post("/api/addStock", async (req, res, next) => {
 		const stock = mongoSanitize((req.body.stock || "").trim());
 		if (!stock) { return setTimeout(() => res.status(400).send("You need to input stock code!"), 300); }
 
@@ -35,9 +35,8 @@ module.exports.default = function (app, io) {
 			.then((result) => {
 				if (result) {
 					const now = Date.now();
-					// eslint-disable-next-line no-underscore-dangle
-					const _4hrsMilisecs = 4 * 60 * 60 * 1000; // hrs*mins*secs*milisecs
-					const dataOlderThan4hrs = (now - result.updatedUTC.getTime()) > _4hrsMilisecs;
+					const _4hrsMilisecs = 4 * 60 * 60 * 1000; //hrs*mins*secs*milisecs
+					const dataOlderThan4hrs = (now - db.updatedUTC.getTime()) > _4hrsMilisecs;
 
 					// MERGE DB AND API DATA AND RETURN
 					if (!dataOlderThan4hrs) {

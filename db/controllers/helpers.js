@@ -27,7 +27,6 @@ exports.refreshAndReturnData = function b(res, symbol) {
 	db.getAllStockCodes()
 		.then((response) => {
 			if (!response.length && !code) { return res.send(""); }
-
 			dbStocks = response.map(item => item.code);
 			// UPDATE ALL DATA AND SAVE NEW STOCK - IF STOCK NOT ALREADY IN DB
 			if (code && dbStocks.indexOf(code) === -1) {
@@ -58,7 +57,6 @@ exports.refreshAndReturnData = function b(res, symbol) {
 			Promise.all(promises)
 				.then((apiResults) => {
 					const data = apiResults.map(item => item.data);
-console.log("Here we are", data);
 					updatePromises = data.map(item => db.updateStock(item.quote.symbol, item));
 					return Promise.all(updatePromises)
 						.then(updateResult => res.send(updateResult.map(item => ({ quote: item.quote, chart: item.chart }))))
@@ -91,10 +89,15 @@ exports.mergeAndReturnData = function c(res, symbol) {
 							.then((respDB) => {
 								return db.addStock(stock, respApi.data) //	ELSE SAVE TO DB
 									.then((_resp_) => {
-										const newStockData = [{ quote: _resp_.quote, chart: _resp_.chart }];
-										return res.send(respDB.concat(newStockData)); 	//	RETURN COMBINED
+										if (_resp_) {
+											const newStockData = [{ quote: _resp_.quote, chart: _resp_.chart }];
+											return res.send(respDB.concat(newStockData)); 	//	RETURN COMBINED
+										}
+										return res.status(400).send({ error: "Network problems"})
 									})
-									.catch(err => res.status(400).send({ error: err.message }));
+									.catch(err => {
+										return res.status(400).send({ error: err.message })
+									});
 							})
 							.catch(err => res.status(400).send({ error: err.message }));
 					})
