@@ -2,6 +2,7 @@
 
 // if development
 if (process.env.HEROKU_RUN == null) {
+	// eslint-disable-next-line global-require
 	require("dotenv").config();
 }
 
@@ -63,4 +64,5 @@ mongoose.connect(dbUrl, { useMongoClient: true, autoIndex: false });
 serverRouter(app, io);
 
 // SERVER
+// eslint-disable-next-line no-console
 server.listen(port, () => console.log(`Listening on port: ${port}`));
