@@ -59,7 +59,7 @@ app.use(limiter);
 // DB
 mongoose.Promise = global.Promise;
 try {	
-	mongoose.connect(dbUrl, { useMongoClient: true, autoIndex: false });
+	mongoose.connect(dbUrl, { useNewUrlParser: true, autoIndex: false });
 } catch (error) {
 	console.log(error);
 }
