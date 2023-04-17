@@ -11,7 +11,7 @@
     "clean": "rimraf dist",
     "test": "mocha",
     "test-w": "nodemon --exec \"npm test\"",
-    "build": "npm run clean && webpack --config webpack.config.js && cross-env NODE_ENV=production node server.js",
+    "build": "npm run clean && webpack --config webpack.config.js && cross-env NODE_ENV=production",
     "builddev": "npm run clean && webpack --config webpack.config.dev.js && cross-env NODE_ENV=development nodemon server.js",
     "watch": "webpack --w",
     "dev": "webpack-dev-server --config webpack.config.dev.js"
